@@ -2,6 +2,8 @@ package com.ravello.management.plugin.application;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravello.management.RavelloMojo;
@@ -11,6 +13,7 @@ import com.ravello.management.toolbox.Credentials;
 import com.ravello.management.toolbox.IOService;
 import com.ravello.management.toolbox.impl.IOServiceImpl;
 
+@Mojo(name = "", defaultPhase = LifecyclePhase.DEPLOY, threadSafe = true)
 public abstract class ApplicationMojo extends RavelloMojo {
 
 	@Parameter(property = "blueprintName", required = true)

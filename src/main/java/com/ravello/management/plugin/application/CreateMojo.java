@@ -8,7 +8,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.ravello.management.plugin.exceptions.ApplicationCreateException;
 import com.ravello.management.toolbox.RavelloBuilder;
 
-@Mojo(name = "app-create", threadSafe = true)
+@Mojo(name = "app-create")
 public class CreateMojo extends ApplicationMojo {
 
 	@Parameter(property = "blueprintId", required = true)

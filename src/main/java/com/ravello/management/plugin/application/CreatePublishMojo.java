@@ -12,7 +12,7 @@ import com.ravello.management.toolbox.ApplicationService;
 import com.ravello.management.toolbox.BlueprintService;
 import com.ravello.management.toolbox.RavelloBuilder;
 
-@Mojo(name = "app-create-publish", threadSafe = true)
+@Mojo(name = "app-create-publish")
 public class CreatePublishMojo extends ApplicationMojo {
 
 	@Parameter(property = "blueprintId", required = true)
