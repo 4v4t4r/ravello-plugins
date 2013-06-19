@@ -20,7 +20,7 @@ public class AttachPropertiesMojo extends ApplicationMojo {
 			Application application = ravelloBuilder.application()
 					.findApplication(applicationName);
 			File zip = createZip(application);
-			attach(zip);
+			attach(zip, application.getId());
 		} catch (ApplicationNotFoundException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (Exception e) {

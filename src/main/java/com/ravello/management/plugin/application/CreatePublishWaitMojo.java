@@ -24,20 +24,25 @@ public class CreatePublishWaitMojo extends ApplicationMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
+			getLog().info("ravello: login");
 			RavelloBuilder ravelloBuilder = RavelloBuilder
 					.get(new CredentialsImpl());
 			BlueprintService blueprintService = ravelloBuilder.blueprint();
+			getLog().info("ravello: create app");
 			Application application = blueprintService.createApplication(
 					blueprintName, applicationName);
 			ApplicationService applicationService = ravelloBuilder
 					.application();
+			getLog().info("ravello: publish app");
 			applicationService.publish(application.getId(), preferredCloud,
 					preferredZone);
+			getLog().info("ravello: wait for publish");
 			applicationService.awaitForPublish(application.getId(), timeout);
 			application = applicationService.findApplication(application
 					.getId());
+			getLog().info("ravello: deploy");
 			File zip = createZip(application);
-			attach(zip);
+			attach(zip, application.getId());
 			delay();
 		} catch (BlueprintNotFoundException e) {
 			throw new MojoFailureException(e.getMessage(), e);

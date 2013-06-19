@@ -13,7 +13,7 @@ import com.ravello.management.toolbox.Credentials;
 import com.ravello.management.toolbox.IOService;
 import com.ravello.management.toolbox.impl.IOServiceImpl;
 
-@Mojo(name = "", defaultPhase = LifecyclePhase.DEPLOY, threadSafe = true)
+@Mojo(name = "", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
 public abstract class ApplicationMojo extends RavelloMojo {
 
 	@Parameter(property = "blueprintName", required = true)
@@ -34,7 +34,7 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	@Parameter(property = "fileName", required = true)
 	protected String fileName;
 
-	@Parameter(property = "classifier", required = true)
+	@Parameter(property = "classifier")
 	protected String classifier;
 
 	@Parameter(property = "delay", defaultValue = "0")
@@ -56,7 +56,10 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		}
 	}
 
-	protected void attach(File zip) {
+	protected void attach(File zip, long appId) {
+		if (classifier == null || classifier.trim().isEmpty()) {
+			classifier = String.valueOf(appId);
+		}
 		projectHelper.attachArtifact(this.project, "zip", classifier, zip);
 	}
 

@@ -20,6 +20,6 @@ public abstract class RavelloMojo extends AbstractMojo {
 	@Parameter(property = "password", required = true)
 	protected String password;
 
-	protected final static String serviceUrl = "https://babushka-2687003.srv.ravcloud.com/services";
+	protected final static String serviceUrl = "https://cloud.ravellosystems.com/services";
 
 }
