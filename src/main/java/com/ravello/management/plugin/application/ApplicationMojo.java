@@ -16,6 +16,14 @@ import com.ravello.management.toolbox.impl.IOServiceImpl;
 @Mojo(name = "", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
 public abstract class ApplicationMojo extends RavelloMojo {
 
+	@Parameter(property = "userName", required = true)
+	protected String userName;
+
+	@Parameter(property = "password", required = true)
+	protected String password;
+
+	protected final static String serviceUrl = "https://cloud.ravellosystems.com/services";
+
 	@Parameter(property = "blueprintName", required = true)
 	protected String blueprintName;
 
@@ -65,10 +73,6 @@ public abstract class ApplicationMojo extends RavelloMojo {
 
 	private String getZipFilePath() {
 		return getTarget().concat("/").concat(fileName).concat(".zip");
-	}
-
-	private String getTarget() {
-		return project.getBuild().getDirectory();
 	}
 
 	private File getPropFile() {
