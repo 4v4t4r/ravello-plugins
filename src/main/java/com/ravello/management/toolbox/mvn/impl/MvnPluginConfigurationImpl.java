@@ -22,16 +22,28 @@ public class MvnPluginConfigurationImpl implements MvnPluginConfiguration {
 
 		List<Xpp3Dom> children = Arrays.asList(configuration.getChildren());
 		for (Xpp3Dom xpp3Dom : children) {
-			if (valid(xpp3Dom) && found(xpp3Dom, placeholder)) {
-				xpp3Dom.setValue(value);
+			if (valid(xpp3Dom) && found(xpp3Dom, wrap(placeholder))) {
+				String updatedValue = replace(xpp3Dom.getValue(),
+						wrap(placeholder), value);
+				xpp3Dom.setValue(updatedValue);
 				return true;
 			}
 		}
 		return false;
 	}
 
+	private String replace(String updateableValue, String placeholder,
+			String newValue) {
+		return updateableValue.replace(placeholder, newValue);
+	}
+
+	private String wrap(String placeholder) {
+		return String.format("${%s}", placeholder);
+	}
+
 	private boolean found(Xpp3Dom xpp3Dom, String placeholder) {
-		return xpp3Dom.getValue().trim().equalsIgnoreCase(placeholder);
+		String value = xpp3Dom.getValue();
+		return value != null ? value.trim().contains(placeholder) : false;
 	}
 
 	private boolean valid(Object o) {

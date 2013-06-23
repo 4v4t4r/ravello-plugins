@@ -21,10 +21,9 @@ import com.ravello.management.toolbox.IOService;
 import com.ravello.management.toolbox.impl.IOServiceImpl;
 import com.ravello.management.toolbox.mvn.MvnArtifactResolver;
 import com.ravello.management.toolbox.mvn.MvnPlugin;
-import com.ravello.management.toolbox.mvn.MvnPluginConfiguration;
-import com.ravello.management.toolbox.mvn.MvnReactors;
+import com.ravello.management.toolbox.mvn.MvnService;
 import com.ravello.management.toolbox.mvn.impl.MvnArtifactResolverImpl;
-import com.ravello.management.toolbox.mvn.impl.MvnReactorsImpl;
+import com.ravello.management.toolbox.mvn.impl.MvnServiceImpl;
 
 @Mojo(name = "inject-properties")
 public class InjectProperties extends RavelloMojo {
@@ -47,15 +46,12 @@ public class InjectProperties extends RavelloMojo {
 	@Parameter(property = "propertiesFileName", required = true)
 	protected String propertiesFileName;
 
-	@Parameter(property = "applicationPropertiesMap", required = true)
-	protected Map<String, List<String>> applicationPropertiesMap;
+	@Parameter(property = "propertiesMap", required = true)
+	protected Map<String, String> propertiesMap;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-
-		System.out.println("##############################");
-		System.out.println(applicationPropertiesMap);
-
+	
 		try {
 			MvnArtifactResolver mvnArtifactResolver = new MvnArtifactResolverImpl(
 					project, resolver, remoteRepositories, localRepository);
@@ -64,17 +60,18 @@ public class InjectProperties extends RavelloMojo {
 			ioService.unzipFile(propertiesZip, getTarget());
 			Properties properties = ioService.readProperties(new File(
 					getTarget(), propertiesFileName));
-			MvnReactors mvnReactors = new MvnReactorsImpl(reactorProjects);
-			List<MvnPlugin> plugins = mvnReactors.findAllPlugins();
-			for (MvnPlugin mvnPlugin : plugins) {
-				MvnPluginConfiguration configuration = mvnPlugin
-						.getConfiguration();
-				// configuration.updateValue(placeholder, properties);
-			}
+			MvnService mvnService = new MvnServiceImpl(project, reactorProjects);
+			List<MvnPlugin> plugins = mvnService.findAllPlugins();
+			Map<String, List<String>> maps = mvnService.preparePropertiesMap(
+					propertiesMap, properties);
+			mvnService.updateConfiguration(maps, properties, plugins);
+			mvnService.updateProperties(maps, properties);
 		} catch (ApplicationPropertiesException e) {
-			e.printStackTrace();
+			throw new MojoFailureException(e.getMessage(), e);
 		} catch (ApplicationPropertiesNotFoundException e) {
-			e.printStackTrace();
+			throw new MojoFailureException(e.getMessage(), e);
+		} catch (Exception e) {
+			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 
