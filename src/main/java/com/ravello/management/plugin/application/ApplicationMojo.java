@@ -2,9 +2,7 @@ package com.ravello.management.plugin.application;
 
 import java.io.File;
 
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 import com.ravello.management.RavelloMojo;
 import com.ravello.management.plugin.exceptions.ApplicationPropertiesException;
@@ -13,7 +11,6 @@ import com.ravello.management.toolbox.Credentials;
 import com.ravello.management.toolbox.IOService;
 import com.ravello.management.toolbox.impl.IOServiceImpl;
 
-@Mojo(name = "", threadSafe = true, aggregator = true)
 public abstract class ApplicationMojo extends RavelloMojo {
 
 	@Parameter(property = "userName", required = true)
@@ -42,15 +39,6 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	@Parameter(property = "finalName")
 	protected String finalName;
 
-	@Parameter(property = "groupId")
-	protected String groupId;
-
-	@Parameter(property = "artifactId")
-	protected String artifactId;
-
-	@Parameter(property = "version")
-	protected String version;
-
 	@Parameter(property = "classifier")
 	protected String classifier;
 
@@ -76,23 +64,10 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	protected void attach(File zip, long appId) {
 		if (classifier == null || classifier.trim().isEmpty())
 			classifier = String.valueOf(appId);
-		MavenProject projectClone = project.clone();
-		projectClone.setGroupId(getGroupId());
-		projectClone.setArtifactId(getArtifactId());
-		projectClone.setVersion(getVersion());
-		projectHelper.attachArtifact(projectClone, "zip", classifier, zip);
-	}
-
-	private String getVersion() {
-		return version != null ? version : project.getVersion();
-	}
-
-	private String getArtifactId() {
-		return artifactId != null ? artifactId : project.getArtifactId();
-	}
-
-	private String getGroupId() {
-		return groupId != null ? groupId : project.getGroupId();
+		getLog().info(
+				String.format("attach: %s %s %s", project.getGroupId(),
+						project.getArtifactId(), project.getPackaging()));
+		projectHelper.attachArtifact(project, "zip", classifier, zip);
 	}
 
 	private String getZipFilePath() {

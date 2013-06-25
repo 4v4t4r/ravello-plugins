@@ -10,6 +10,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -25,7 +26,7 @@ import com.ravello.management.toolbox.mvn.MvnService;
 import com.ravello.management.toolbox.mvn.impl.MvnArtifactResolverImpl;
 import com.ravello.management.toolbox.mvn.impl.MvnServiceImpl;
 
-@Mojo(name = "inject-properties")
+@Mojo(name = "inject-properties", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class InjectProperties extends RavelloMojo {
 
 	@Parameter(defaultValue = "${project.remoteArtifactRepositories}", readonly = true, required = true)
@@ -51,7 +52,7 @@ public class InjectProperties extends RavelloMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-	
+
 		try {
 			MvnArtifactResolver mvnArtifactResolver = new MvnArtifactResolverImpl(
 					project, resolver, remoteRepositories, localRepository);

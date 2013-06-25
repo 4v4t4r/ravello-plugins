@@ -34,9 +34,7 @@ public class MvnServiceImpl implements MvnService {
 		if (propertiesMap == null || propertiesMap.isEmpty()) {
 			Set<Object> keySet = properties.keySet();
 			for (Object key : keySet) {
-				maps.put(key.toString(), Arrays
-						.asList(new String[] { properties.getProperty(key
-								.toString()) }));
+				maps.put(key.toString(), propsToList(properties, key));
 			}
 			return maps;
 		}
@@ -46,6 +44,11 @@ public class MvnServiceImpl implements MvnService {
 			maps.put(key, Arrays.asList(values.split(",")));
 		}
 		return maps;
+	}
+
+	private List<String> propsToList(Properties properties, Object key) {
+		return Arrays.asList(new String[] { properties.getProperty(key
+				.toString()) });
 	}
 
 	@Override

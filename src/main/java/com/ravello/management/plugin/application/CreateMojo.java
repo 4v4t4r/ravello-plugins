@@ -2,13 +2,14 @@ package com.ravello.management.plugin.application;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravello.management.plugin.exceptions.ApplicationCreateException;
 import com.ravello.management.toolbox.RavelloBuilder;
 
-@Mojo(name = "app-create")
+@Mojo(name = "app-create", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
 public class CreateMojo extends ApplicationMojo {
 
 	@Parameter(property = "blueprintId", required = true)
