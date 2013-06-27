@@ -6,7 +6,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.ravello.plugins.common.RavelloFabric;
+import com.ravello.plugins.common.RavelloRestFactory;
 import com.ravello.plugins.exceptions.RavelloPluginException;
 
 @Mojo(name = "app-create", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
@@ -20,7 +20,7 @@ public class CreateMojo extends ApplicationMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			RavelloFabric.get(new CredentialsImpl()).blueprint()
+			RavelloRestFactory.get(new CredentialsImpl()).blueprint()
 					.createApplication(blueprintId, applicationName);
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);

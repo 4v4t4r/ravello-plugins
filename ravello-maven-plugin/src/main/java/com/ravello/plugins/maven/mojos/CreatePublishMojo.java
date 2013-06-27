@@ -9,7 +9,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.BlueprintService;
-import com.ravello.plugins.common.RavelloFabric;
+import com.ravello.plugins.common.RavelloRestFactory;
 import com.ravello.plugins.exceptions.RavelloPluginException;
 
 @Mojo(name = "app-create-publish", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
@@ -22,7 +22,7 @@ public class CreatePublishMojo extends ApplicationMojo {
 	private String applicationName;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		RavelloFabric ravelloBuilder = RavelloFabric
+		RavelloRestFactory ravelloBuilder = RavelloRestFactory
 				.get(new CredentialsImpl());
 		BlueprintService blueprintService = ravelloBuilder.blueprint();
 		ApplicationService applicationService = ravelloBuilder.application();

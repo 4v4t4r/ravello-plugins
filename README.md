@@ -1,4 +1,4 @@
-ravello-maven-plugin
+ravello-plugin
 ====================
 
-Maven plugin for Ravello integration
+Plugin for Ravello integration

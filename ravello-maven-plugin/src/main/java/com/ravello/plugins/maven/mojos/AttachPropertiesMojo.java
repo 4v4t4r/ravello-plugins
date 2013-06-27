@@ -8,14 +8,14 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 import com.ravello.plugins.common.Application;
-import com.ravello.plugins.common.RavelloFabric;
+import com.ravello.plugins.common.RavelloRestFactory;
 import com.ravello.plugins.exceptions.RavelloPluginException;
 
 @Mojo(name = "app-attach-props", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
 public class AttachPropertiesMojo extends ApplicationMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		RavelloFabric ravelloBuilder = RavelloFabric
+		RavelloRestFactory ravelloBuilder = RavelloRestFactory
 				.get(new CredentialsImpl());
 		try {
 			Application application = ravelloBuilder.application()

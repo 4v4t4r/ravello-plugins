@@ -11,7 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.BlueprintService;
-import com.ravello.plugins.common.RavelloFabric;
+import com.ravello.plugins.common.RavelloRestFactory;
 import com.ravello.plugins.exceptions.RavelloPluginException;
 
 @Mojo(name = "app-create-publish-wait", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
@@ -23,7 +23,7 @@ public class CreatePublishWaitMojo extends ApplicationMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			getLog().info("ravello: login");
-			RavelloFabric ravelloBuilder = RavelloFabric
+			RavelloRestFactory ravelloBuilder = RavelloRestFactory
 					.get(new CredentialsImpl());
 			BlueprintService blueprintService = ravelloBuilder.blueprint();
 			getLog().info("ravello: create app");

@@ -12,8 +12,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.ravello.auto.mgmt.rest.ApplicationClient;
-import com.ravello.auto.mgmt.rest.RestClient;
 import com.ravello.auto.rest.client.common.types.RestResponse;
 import com.ravello.management.common.dtos.application.ApplicationDto;
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
@@ -22,6 +20,7 @@ import com.ravello.management.common.dtos.vm.VmDto;
 import com.ravello.management.common.dtos.vm.VmPropertiesDto;
 import com.ravello.management.common.dtos.vm.VmRuntimeInformation;
 import com.ravello.plugins.common.Application;
+import com.ravello.plugins.common.ApplicationRestService;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
@@ -29,13 +28,13 @@ import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
-	private ApplicationClient restClient;
+	private ApplicationRestService restService;
 
 	@Override
 	public void publish(long appId, String preferredCloud, String preferredZone)
 			throws ApplicationPublishException {
 		try {
-			this.restClient.publish(appId, preferredCloud, preferredZone);
+			this.restService.publish(appId, preferredCloud, preferredZone);
 		} catch (Exception e) {
 			throw new ApplicationPublishException(e);
 		}
@@ -61,16 +60,17 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isPublishing(long appId) throws ApplicationPublishException,
 			ApplicationWrongStateException {
-		RestResponse<ApplicationDto> response = restClient
-				.getApplicationInstance(appId);
-		List<VmDto> vms = response.getDto().getVms();
+		RestResponse<ApplicationDto> response = restService
+				.getApplicationInstance(appId).to(RestResponse.class);
+		ApplicationDto dto = response.getDto();
+		List<VmDto> vms = dto.getVms();
 		Set<Boolean> vmStates = new HashSet<Boolean>();
-		for (VmDto vmDto : vms) {
+		for (VmDto vmDto : vms)
 			vmStates.add(isVmStarted(vmDto));
-		}
 		return vmStates.contains(false);
 	}
 
@@ -97,11 +97,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Application findApplication(String appName)
 			throws ApplicationNotFoundException {
-		RestResponse<List<ApplicationPropertiesDto>> response = restClient
-				.getApplicationsList();
+		RestResponse<List<ApplicationPropertiesDto>> response = restService
+				.getApplicationsList().to(RestResponse.class);
 		List<ApplicationPropertiesDto> propertiesList = response.getDto();
 		for (ApplicationPropertiesDto properties : propertiesList) {
 			if (properties.getName().trim().equalsIgnoreCase(appName))
@@ -110,10 +111,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 		throw new ApplicationNotFoundException(appName);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Application findApplication(long appId) {
-		RestResponse<ApplicationDto> response = restClient
-				.getApplicationInstance(appId);
+		RestResponse<ApplicationDto> response = restService
+				.getApplicationInstance(appId).to(RestResponse.class);
 		final ApplicationPropertiesDto properties = response.getDto()
 				.getApplicationProperties();
 		final List<VmDto> vms = response.getDto().getVms();
@@ -161,7 +163,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public void setRestClient(RestClient restClient) {
-		this.restClient = (ApplicationClient) restClient;
+	public void setRestClient(ApplicationRestService restService) {
+		this.restService = restService;
 	}
 }
