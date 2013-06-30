@@ -71,7 +71,7 @@ public class MavenHelperImpl implements MavenHelper {
 		for (MavenProject mavenProject : reactorProjects) {
 			List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
 			for (Plugin plugin : buildPlugins) {
-				mvnPlugins.add(new PluginImpl(plugin));
+				mvnPlugins.add(new PluginHelperImpl(plugin));
 			}
 		}
 		return mvnPlugins;
