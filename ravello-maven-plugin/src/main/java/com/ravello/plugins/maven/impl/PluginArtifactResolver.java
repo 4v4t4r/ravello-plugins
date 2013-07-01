@@ -30,12 +30,12 @@ public class PluginArtifactResolver implements ArtifactResolverHelper {
 	}
 
 	@Override
-	public File artifactToFile(String artifactId)
+	public File artifactToFile(String artifactPrefix)
 			throws ApplicationPropertiesNotFoundException {
 		try {
 			List<Artifact> artifacts = pluginDescriptor.getArtifacts();
 			for (Artifact artifact : safe(artifacts)) {
-				if (artifact.getArtifactId().equals(artifactId.trim())) {
+				if (artifact.getArtifactId().startsWith(artifactPrefix.trim())) {
 					this.resolver.resolve(artifact, this.remoteRepositories,
 							this.localRepository);
 					return artifact.getFile();
@@ -46,16 +46,8 @@ public class PluginArtifactResolver implements ArtifactResolverHelper {
 		}
 
 		throw new ApplicationPropertiesNotFoundException(
-				"Not found in any repository: " + artifactId);
+				"Not found in any repository: " + artifactPrefix);
 	}
-
-	// private Artifact toArtifact(ComponentDependency dependency) {
-	// DefaultArtifactFactory artifactFactory = new DefaultArtifactFactory();
-	// return artifactFactory.createDependencyArtifact(
-	// dependency.getGroupId(), dependency.getArtifactId(),
-	// VersionRange.createFromVersion(dependency.getVersion()),
-	// dependency.getType(), "", "");
-	// }
 
 	private final static <T> Iterable<T> safe(Iterable<T> iterable) {
 		return iterable == null ? Collections.<T> emptyList() : iterable;

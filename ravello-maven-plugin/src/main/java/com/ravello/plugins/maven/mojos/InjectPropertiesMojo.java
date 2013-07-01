@@ -15,7 +15,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.settings.Settings;
 
 import com.ravello.plugins.common.IOService;
 import com.ravello.plugins.common.impl.IOServiceImpl;
@@ -42,14 +41,10 @@ public class InjectPropertiesMojo extends RavelloMojo {
 	@Parameter(defaultValue = "${reactorProjects}", readonly = true)
 	private List<MavenProject> reactorProjects;
 
-	@Parameter(defaultValue = "${settings}", readonly = true)
-	private Settings settings;
-	
 	@Parameter(defaultValue = "${plugin}", readonly = true)
 	private PluginDescriptor pluginDescriptor;
 
-	@Parameter(property = "artifactId", required = true)
-	protected String artifactId;
+	private static final String ARTIFACT_ID_PEFIX = "ravello-app";
 
 	@Parameter(property = "propertiesFileName", required = true)
 	protected String propertiesFileName;
@@ -67,7 +62,8 @@ public class InjectPropertiesMojo extends RavelloMojo {
 			ArtifactResolverHelper mvnArtifactResolver = new PluginArtifactResolver(
 					pluginDescriptor, resolver, remoteRepositories,
 					localRepository);
-			File propertiesZip = mvnArtifactResolver.artifactToFile(artifactId);
+			File propertiesZip = mvnArtifactResolver
+					.artifactToFile(ARTIFACT_ID_PEFIX);
 			IOService ioService = new IOServiceImpl();
 			ioService.unzipFile(propertiesZip, getTarget());
 			Properties properties = ioService.readProperties(new File(

@@ -1,13 +1,14 @@
 package com.ravello.plugins.common;
 
+import com.ravello.plugins.exceptions.ApplicationNotFoundException;
 
 public interface ApplicationRestService {
 
 	void publish(long appId, String preferredCloud, String preferredZone);
 
-	RestResult getApplicationInstance(long appId);
+	Application findApplication(String appName)
+			throws ApplicationNotFoundException;
 
-	RestResult getApplicationsList();
-
+	Application findApplication(long appId) throws ApplicationNotFoundException;
 
 }

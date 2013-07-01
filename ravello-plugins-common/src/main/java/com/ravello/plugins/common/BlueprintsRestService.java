@@ -1,9 +1,12 @@
 package com.ravello.plugins.common;
 
+import com.ravello.plugins.exceptions.BlueprintNotFoundException;
+
 public interface BlueprintsRestService {
 
-	RestResult getBlueprints();
+	Application findBlueprint(String blueprintName)
+			throws BlueprintNotFoundException;
 
-	RestResult createApplication(long blueprintId, String appName);
+	Application createApplication(long blueprintId, String appName);
 
 }

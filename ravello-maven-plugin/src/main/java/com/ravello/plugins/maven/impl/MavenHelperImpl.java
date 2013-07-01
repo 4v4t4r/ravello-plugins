@@ -2,7 +2,6 @@ package com.ravello.plugins.maven.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.Set;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 
+import static com.ravello.plugins.common.Utils.safeIter;
 import com.ravello.plugins.maven.MavenHelper;
 import com.ravello.plugins.maven.PluginConfigurationHelper;
 import com.ravello.plugins.maven.PluginHelper;
@@ -59,7 +59,7 @@ public class MavenHelperImpl implements MavenHelper {
 			String _propertyKey = propertyKey.toString();
 			String value = properties.getProperty(_propertyKey);
 			List<String> placeholders = propertiesMap.get(_propertyKey);
-			for (String placeholder : safe(placeholders)) {
+			for (String placeholder : safeIter(placeholders)) {
 				project.getProperties().setProperty(placeholder, value);
 			}
 		}
@@ -81,7 +81,8 @@ public class MavenHelperImpl implements MavenHelper {
 	public void updateConfiguration(Map<String, List<String>> propertiesMap,
 			Properties properties, List<PluginHelper> plugins) {
 		for (PluginHelper mvnPlugin : plugins) {
-			PluginConfigurationHelper configuration = mvnPlugin.getConfiguration();
+			PluginConfigurationHelper configuration = mvnPlugin
+					.getConfiguration();
 			prepareUpdate(propertiesMap, properties, configuration);
 		}
 	}
@@ -97,15 +98,11 @@ public class MavenHelperImpl implements MavenHelper {
 		}
 	}
 
-	private void doUpdate(PluginConfigurationHelper configuration, String value,
-			List<String> placeholders) {
-		for (String placeholder : safe(placeholders)) {
+	private void doUpdate(PluginConfigurationHelper configuration,
+			String value, List<String> placeholders) {
+		for (String placeholder : safeIter(placeholders)) {
 			configuration.updateValue(placeholder, value);
 		}
-	}
-
-	private final static <T> Iterable<T> safe(Iterable<T> iterable) {
-		return iterable == null ? Collections.<T> emptyList() : iterable;
 	}
 
 }

@@ -15,9 +15,9 @@ public interface ApplicationService {
 			throws ApplicationPublishException, ApplicationWrongStateException;
 
 	boolean isPublishing(long appId) throws ApplicationPublishException,
-			ApplicationWrongStateException;
+			ApplicationWrongStateException, ApplicationNotFoundException;
 
-	Application findApplication(long appId);
+	Application findApplication(long appId) throws ApplicationNotFoundException;
 
 	Application findApplication(String appName)
 			throws ApplicationNotFoundException;
