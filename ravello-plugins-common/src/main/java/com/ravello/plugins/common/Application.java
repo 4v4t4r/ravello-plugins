@@ -8,13 +8,17 @@ import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public interface Application {
 
+	public enum STATE {
+		STARTED, STOPPED;
+	}
+
 	long getId();
 
 	String getName();
 
 	Map<String, String> getVmsDNS();
 
-	Set<Boolean> getVmsState() throws ApplicationPublishException,
-			ApplicationWrongStateException;
+	Set<Boolean> compareVmsState(Application.STATE state)
+			throws ApplicationPublishException, ApplicationWrongStateException;
 
 }

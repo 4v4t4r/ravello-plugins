@@ -87,8 +87,10 @@ public class ApplicationServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> getVmsState() throws ApplicationPublishException,
+		public Set<Boolean> compareVmsState(STATE state)
+				throws ApplicationPublishException,
 				ApplicationWrongStateException {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	};

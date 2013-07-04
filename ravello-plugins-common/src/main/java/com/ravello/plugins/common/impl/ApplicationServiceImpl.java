@@ -1,5 +1,7 @@
 package com.ravello.plugins.common.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,51 +10,91 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.ravello.plugins.common.Application;
+import com.ravello.plugins.common.Application.STATE;
 import com.ravello.plugins.common.ApplicationRestService;
 import com.ravello.plugins.common.ApplicationService;
+import com.ravello.plugins.exceptions.ApplicationDeleteException;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
+import com.ravello.plugins.exceptions.ApplicationStartException;
+import com.ravello.plugins.exceptions.ApplicationStopException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public class ApplicationServiceImpl implements ApplicationService {
 
 	private ApplicationRestService restService;
+	private Map<Application.STATE, StateTask> stateTasks = new HashMap<Application.STATE, StateTask>();
+
+	public ApplicationServiceImpl() {
+		this.stateTasks.put(STATE.STARTED, new StartedTask());
+		this.stateTasks.put(STATE.STOPPED, new StoppedTask());
+	}
 
 	@Override
 	public void publish(long appId, String preferredCloud, String preferredZone)
 			throws ApplicationPublishException {
 		try {
-			this.restService.publish(appId, preferredCloud, preferredZone);
+			restService.publish(appId, preferredCloud, preferredZone);
 		} catch (Exception e) {
 			throw new ApplicationPublishException(e);
 		}
 	}
 
 	@Override
-	public void awaitForPublish(long appId, long timeout)
-			throws ApplicationPublishException, ApplicationWrongStateException {
+	public void delete(long appId) throws ApplicationDeleteException {
+		try {
+			restService.delete(appId);
+		} catch (Exception e) {
+			throw new ApplicationDeleteException(e);
+		}
+	}
+
+	@Override
+	public void stop(long appId) throws ApplicationStopException {
+		try {
+			restService.stop(appId);
+		} catch (Exception e) {
+			throw new ApplicationStopException(e);
+		}
+	}
+
+	@Override
+	public void start(long appId) throws ApplicationStartException {
+		try {
+			restService.start(appId);
+		} catch (Exception e) {
+			throw new ApplicationStartException(e);
+		}
+	}
+
+	@Override
+	public void awaitForApplicationState(long appId, long timeout, STATE state)
+			throws ApplicationStartException, ApplicationWrongStateException {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Future<Object> future = executor.submit(new Task(appId));
+		StateTask stateTask = stateTasks.get(state);
+		stateTask.appId = appId;
+		Future<Object> future = executor.submit(stateTask);
 		try {
 			future.get(timeout, TimeUnit.MINUTES);
 		} catch (TimeoutException e) {
-			throw new ApplicationPublishException(e);
+			throw new ApplicationStartException(e);
 		} catch (Exception ex) {
 			if (ex.getCause() instanceof ApplicationPublishException)
-				throw new ApplicationPublishException(ex);
+				throw new ApplicationStartException(ex);
 			if (ex.getCause() instanceof ApplicationWrongStateException)
 				throw new ApplicationWrongStateException(ex);
-			throw new ApplicationPublishException(ex);
+			throw new ApplicationStartException(ex);
 		} finally {
 			executor.shutdownNow();
 		}
 	}
 
 	@Override
-	public boolean isPublishing(long appId) throws ApplicationPublishException,
-			ApplicationWrongStateException, ApplicationNotFoundException {
+	public boolean checkState(long appId, STATE state)
+			throws ApplicationPublishException, ApplicationWrongStateException,
+			ApplicationNotFoundException {
 		Application application = restService.findApplication(appId);
-		return application.getVmsState().contains(false);
+		return application.compareVmsState(state).contains(false);
 	}
 
 	@Override
@@ -67,19 +109,31 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return restService.findApplication(appId);
 	}
 
-	private final class Task implements Callable<Object> {
+	private abstract class StateTask implements Callable<Object> {
 		long appId;
 
-		Task(long appId) {
-			this.appId = appId;
-		}
+		abstract STATE getState();
 
 		@Override
 		public Object call() throws Exception {
 			do {
 				Thread.sleep(30000);
-			} while (isPublishing(appId));
+			} while (checkState(appId, getState()));
 			return "Ready";
+		}
+	}
+
+	private final class StartedTask extends StateTask {
+		@Override
+		STATE getState() {
+			return STATE.STARTED;
+		}
+	}
+
+	private final class StoppedTask extends StateTask {
+		@Override
+		STATE getState() {
+			return STATE.STOPPED;
 		}
 	}
 
@@ -87,4 +141,5 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public void setRestClient(ApplicationRestService restService) {
 		this.restService = restService;
 	}
+
 }

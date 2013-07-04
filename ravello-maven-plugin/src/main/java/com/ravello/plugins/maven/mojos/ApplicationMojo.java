@@ -41,6 +41,9 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	@Parameter(property = "classifier")
 	protected String classifier;
 
+	@Parameter(property = "timeout", defaultValue = "20")
+	protected int timeout;
+
 	@Parameter(property = "delay", defaultValue = "0")
 	protected String delay;
 

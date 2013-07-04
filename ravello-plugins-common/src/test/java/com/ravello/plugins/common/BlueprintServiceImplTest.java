@@ -64,7 +64,8 @@ public class BlueprintServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> getVmsState() throws ApplicationPublishException,
+		public Set<Boolean> compareVmsState(STATE state)
+				throws ApplicationPublishException,
 				ApplicationWrongStateException {
 			return null;
 		}
@@ -87,7 +88,8 @@ public class BlueprintServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> getVmsState() throws ApplicationPublishException,
+		public Set<Boolean> compareVmsState(STATE state)
+				throws ApplicationPublishException,
 				ApplicationWrongStateException {
 			return null;
 		}

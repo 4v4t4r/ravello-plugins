@@ -36,26 +36,59 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 	}
 
 	@Override
-	public Application findApplication(String appName)
+	public void delete(long appId) {
+		client.deleteApplicationInstance(appId);
+	}
+
+	@Override
+	public void start(long appId) {
+		ApplicationDto applicationDto = findApplicationDto(appId);
+		List<VmDto> vms = applicationDto.getVms();
+		for (VmDto vmDto : vms) {
+			client.startGuest(appId, vmDto.getVmProperties().getId());
+		}
+	}
+
+	@Override
+	public void stop(long appId) {
+		ApplicationDto applicationDto = findApplicationDto(appId);
+		List<VmDto> vms = applicationDto.getVms();
+		for (VmDto vmDto : vms) {
+			client.stopGuest(appId, vmDto.getVmProperties().getId());
+		}
+	}
+
+	private ApplicationPropertiesDto findApplicationPropertiesDto(String appName)
 			throws ApplicationNotFoundException {
 		RestResponse<List<ApplicationPropertiesDto>> response = client
 				.getApplicationsList();
 		List<ApplicationPropertiesDto> propertiesList = response.getDto();
-		final ApplicationPropertiesDto propertiesDto = safeIterNext(select(
+		ApplicationPropertiesDto propertiesDto = safeIterNext(select(
 				propertiesList,
 				having(on(ApplicationPropertiesDto.class).getName(),
 						Matchers.equalTo(appName.trim()))));
 		if (propertiesDto == null)
 			throw new ApplicationNotFoundException(appName);
+		return propertiesDto;
+	}
+
+	@Override
+	public Application findApplication(String appName)
+			throws ApplicationNotFoundException {
+		ApplicationPropertiesDto propertiesDto = findApplicationPropertiesDto(appName);
 		return findApplication(propertiesDto.getId());
 	}
 
 	@Override
 	public Application findApplication(long appId) {
+		ApplicationDto applicationDto = findApplicationDto(appId);
+		return new ApplicationImpl(applicationDto);
+	}
+
+	private ApplicationDto findApplicationDto(long appId) {
 		RestResponse<ApplicationDto> response = client
 				.getApplicationInstance(appId);
-		ApplicationDto applicationDto = response.getDto();
-		return new ApplicationImpl(applicationDto);
+		return response.getDto();
 	}
 
 	@Override
@@ -104,39 +137,41 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 		}
 
 		@Override
-		public Set<Boolean> getVmsState() throws ApplicationPublishException,
+		public Set<Boolean> compareVmsState(Application.STATE state)
+				throws ApplicationPublishException,
 				ApplicationWrongStateException {
 			List<VmDto> vms = applicationDto.getVms();
 			Set<Boolean> vmsStates = new HashSet<Boolean>();
 			for (VmDto vmDto : vms)
-				vmsStates.add(isVmStarted(vmDto));
+				vmsStates.add(compareVmState(vmDto, state));
 			return vmsStates;
 		}
 
-		private boolean isVmStarted(VmDto vmDto)
+		private boolean compareVmState(VmDto vmDto, STATE state)
 				throws ApplicationPublishException,
 				ApplicationWrongStateException {
 			VmPropertiesDto vmProps = vmDto.getVmProperties();
 			VmRuntimeInformation runtimeInformation = vmProps
 					.getRuntimeInformation();
-			GuestStateDto state = runtimeInformation.getState();
+			GuestStateDto vmState = runtimeInformation.getState();
+			String name = vmProps.getName();
 
-			switch (state) {
+			switch (vmState) {
 			case ERROR:
 				throw new ApplicationPublishException(String.format(
-						"VM %s ERROR!", vmProps.getName()));
+						"VM %s ERROR!", name));
 			case STOPPED:
 				throw new ApplicationWrongStateException(String.format(
-						"VM %s STOPED!", vmProps.getName()));
+						"VM %s STOPED!", name));
 			case TERMINATED:
 				throw new ApplicationWrongStateException(String.format(
-						"VM %s TERMINATED!", vmProps.getName()));
-			case STARTED:
-				return true;
+						"VM %s TERMINATED!", name));
 			default:
-				return false;
+				return vmState.name().equals(state.name());
 			}
+
 		}
+
 	}
 
 }

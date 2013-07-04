@@ -11,4 +11,10 @@ public interface ApplicationRestService {
 
 	Application findApplication(long appId) throws ApplicationNotFoundException;
 
+	void start(long appId);
+
+	void stop(long appId);
+
+	void delete(long appId);
+
 }

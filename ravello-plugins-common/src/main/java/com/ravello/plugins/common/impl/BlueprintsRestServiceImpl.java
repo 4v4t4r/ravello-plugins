@@ -18,6 +18,8 @@ import com.ravello.management.common.dtos.application.ApplicationDto;
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
 import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.BlueprintsRestService;
+import com.ravello.plugins.exceptions.ApplicationPublishException;
+import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
 
 public class BlueprintsRestServiceImpl implements BlueprintsRestService {
@@ -84,8 +86,11 @@ public class BlueprintsRestServiceImpl implements BlueprintsRestService {
 		}
 
 		@Override
-		public Set<Boolean> getVmsState() {
+		public Set<Boolean> compareVmsState(STATE state)
+				throws ApplicationPublishException,
+				ApplicationWrongStateException {
 			return new HashSet<Boolean>();
 		}
+
 	}
 }
