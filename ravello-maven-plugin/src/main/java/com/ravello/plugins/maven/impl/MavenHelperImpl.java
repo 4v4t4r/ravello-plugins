@@ -1,17 +1,18 @@
 package com.ravello.plugins.maven.impl;
 
+import static com.ravello.plugins.common.Utils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 
-import static com.ravello.plugins.common.Utils.safeIter;
+import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.maven.MavenHelper;
 import com.ravello.plugins.maven.PluginConfigurationHelper;
 import com.ravello.plugins.maven.PluginHelper;
@@ -28,40 +29,49 @@ public class MavenHelperImpl implements MavenHelper {
 	}
 
 	@Override
-	public Map<String, List<String>> preparePropertiesMap(
-			Map<String, String> propertiesMap, Properties properties) {
-		Map<String, List<String>> maps = new HashMap<String, List<String>>();
-		if (propertiesMap == null || propertiesMap.isEmpty()) {
-			Set<Object> keySet = properties.keySet();
-			for (Object key : keySet) {
-				maps.put(key.toString(), propsToList(properties, key));
-			}
-			return maps;
+	public Map<String, String> preparePropertiesMap(
+			Map<String, String> propertiesMap, Map<String, String> dnsProperties)
+			throws ApplicationPropertiesException {
+
+		if (isEmpty(propertiesMap)) {
+			return dnsProperties;
 		}
+
+		Map<String, String> maps = new HashMap<String, String>();
 		Set<String> keySet = propertiesMap.keySet();
 		for (String key : keySet) {
-			String values = propertiesMap.get(key);
-			maps.put(key, Arrays.asList(values.split(",")));
+			String propertyMap = propertiesMap.get(key);
+			List<String> dnsNames = findDNSNames(propertyMap);
+			for (String dnsName : dnsNames) {
+				String dnsValue = findDNSValue(dnsProperties, dnsName);
+				propertyMap = propertyMap.replace(dnsName, dnsValue);
+			}
+			maps.put(key, propertyMap);
 		}
 		return maps;
 	}
 
-	private List<String> propsToList(Properties properties, Object key) {
-		return Arrays.asList(new String[] { properties.getProperty(key
-				.toString()) });
+	private List<String> findDNSNames(String dnsNames)
+			throws ApplicationPropertiesException {
+		if (isEmpty(dnsNames))
+			throw new ApplicationPropertiesException(
+					"DNS mapping name cannot be empty");
+		return Arrays.asList(dnsNames.split(";"));
+	}
+
+	private String findDNSValue(Map<String, String> dnsProperties,
+			String dnsName) throws ApplicationPropertiesException {
+		if (!dnsProperties.containsKey(dnsName))
+			throw new ApplicationPropertiesException(String.format(
+					"DNS name %s not found in application DNS file", dnsName));
+		return dnsProperties.get(dnsName);
 	}
 
 	@Override
-	public void updateProperties(Map<String, List<String>> propertiesMap,
-			Properties properties) {
-		Set<Object> propertiesKeys = properties.keySet();
-		for (Object propertyKey : propertiesKeys) {
-			String _propertyKey = propertyKey.toString();
-			String value = properties.getProperty(_propertyKey);
-			List<String> placeholders = propertiesMap.get(_propertyKey);
-			for (String placeholder : safeIter(placeholders)) {
-				project.getProperties().setProperty(placeholder, value);
-			}
+	public void updateProperties(Map<String, String> propertiesMap) {
+		Set<String> keys = propertiesMap.keySet();
+		for (String key : keys) {
+			project.getProperties().setProperty(key, propertiesMap.get(key));
 		}
 	}
 
@@ -78,30 +88,20 @@ public class MavenHelperImpl implements MavenHelper {
 	}
 
 	@Override
-	public void updateConfiguration(Map<String, List<String>> propertiesMap,
-			Properties properties, List<PluginHelper> plugins) {
-		for (PluginHelper mvnPlugin : plugins) {
+	public void updatePluginsConfiguration(Map<String, String> propertiesMap) {
+		for (PluginHelper mvnPlugin : findAllPlugins()) {
 			PluginConfigurationHelper configuration = mvnPlugin
 					.getConfiguration();
-			prepareUpdate(propertiesMap, properties, configuration);
+			doUpdate(propertiesMap, configuration);
 		}
 	}
 
-	private void prepareUpdate(Map<String, List<String>> propertiesMap,
-			Properties properties, PluginConfigurationHelper configuration) {
-		Set<Object> propertiesKeys = properties.keySet();
-		for (Object propertyKey : propertiesKeys) {
-			String _propertyKey = propertyKey.toString();
-			String value = properties.getProperty(_propertyKey);
-			List<String> placeholders = propertiesMap.get(_propertyKey);
-			doUpdate(configuration, value, placeholders);
-		}
-	}
-
-	private void doUpdate(PluginConfigurationHelper configuration,
-			String value, List<String> placeholders) {
-		for (String placeholder : safeIter(placeholders)) {
-			configuration.updateValue(placeholder, value);
+	private void doUpdate(Map<String, String> propertiesMap,
+			PluginConfigurationHelper configuration) {
+		Set<String> keySet = propertiesMap.keySet();
+		for (String key : keySet) {
+			String value = propertiesMap.get(key);
+			configuration.updateValue(key, value);
 		}
 	}
 

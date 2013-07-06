@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -111,16 +112,18 @@ public class IOServiceImpl implements IOService {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Properties readProperties(File file)
+	public Map<String, String> readProperties(File file)
 			throws ApplicationPropertiesException {
 		Properties properties = new Properties();
 		try {
 			properties.load(new FileInputStream(file));
+			Map<String, String> map = new HashMap(properties);
+			return map;
 		} catch (Exception e) {
 			throw new ApplicationPropertiesException(e);
 		}
-		return properties;
 	}
 
 }

@@ -2,7 +2,6 @@ package com.ravello.plugins.common;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Properties;
 
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 
@@ -16,6 +15,7 @@ public interface IOService {
 	void unzipFile(File file, String extractTo)
 			throws ApplicationPropertiesException;
 
-	Properties readProperties(File file) throws ApplicationPropertiesException;
+	Map<String, String> readProperties(File file)
+			throws ApplicationPropertiesException;
 
 }

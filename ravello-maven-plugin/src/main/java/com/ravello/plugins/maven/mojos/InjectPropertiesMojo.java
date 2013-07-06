@@ -3,7 +3,6 @@ package com.ravello.plugins.maven.mojos;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -22,7 +21,6 @@ import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.exceptions.ApplicationPropertiesNotFoundException;
 import com.ravello.plugins.maven.ArtifactResolverHelper;
 import com.ravello.plugins.maven.MavenHelper;
-import com.ravello.plugins.maven.PluginHelper;
 import com.ravello.plugins.maven.impl.MavenHelperImpl;
 import com.ravello.plugins.maven.impl.PluginArtifactResolver;
 
@@ -49,7 +47,7 @@ public class InjectPropertiesMojo extends RavelloMojo {
 	@Parameter(property = "propertiesFileName", required = true)
 	protected String propertiesFileName;
 
-	@Parameter(property = "propertiesMap", required = true)
+	@Parameter(property = "propertiesMap")
 	protected Map<String, String> propertiesMap;
 
 	@Override
@@ -58,7 +56,6 @@ public class InjectPropertiesMojo extends RavelloMojo {
 		try {
 			MavenHelper mavenHelper = new MavenHelperImpl(project,
 					reactorProjects);
-			List<PluginHelper> plugins = mavenHelper.findAllPlugins();
 			ArtifactResolverHelper mvnArtifactResolver = new PluginArtifactResolver(
 					pluginDescriptor, resolver, remoteRepositories,
 					localRepository);
@@ -66,12 +63,12 @@ public class InjectPropertiesMojo extends RavelloMojo {
 					.artifactToFile(ARTIFACT_ID_PEFIX);
 			IOService ioService = new IOServiceImpl();
 			ioService.unzipFile(propertiesZip, getTarget());
-			Properties properties = ioService.readProperties(new File(
-					getTarget(), propertiesFileName));
-			Map<String, List<String>> maps = mavenHelper.preparePropertiesMap(
-					propertiesMap, properties);
-			mavenHelper.updateConfiguration(maps, properties, plugins);
-			mavenHelper.updateProperties(maps, properties);
+			Map<String, String> dnsProperties = ioService
+					.readProperties(new File(getTarget(), propertiesFileName));
+			Map<String, String> dnsNamesPropertiesMap = mavenHelper
+					.preparePropertiesMap(propertiesMap, dnsProperties);
+			mavenHelper.updatePluginsConfiguration(dnsNamesPropertiesMap);
+			mavenHelper.updateProperties(dnsNamesPropertiesMap);
 		} catch (ApplicationPropertiesException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (ApplicationPropertiesNotFoundException e) {

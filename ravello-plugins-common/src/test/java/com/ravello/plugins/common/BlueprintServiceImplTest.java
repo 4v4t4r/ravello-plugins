@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.Assert;
 
+import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.common.impl.BlueprintServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationCreateException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
@@ -49,7 +50,7 @@ public class BlueprintServiceImplTest {
 
 	private static final class ApplicationImpl implements Application {
 		@Override
-		public Map<String, String> getVmsDNS() {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
 			return null;
 		}
 
@@ -73,7 +74,7 @@ public class BlueprintServiceImplTest {
 
 	private static final class Blueprint implements Application {
 		@Override
-		public Map<String, String> getVmsDNS() {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
 			return null;
 		}
 

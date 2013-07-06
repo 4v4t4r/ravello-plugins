@@ -16,9 +16,13 @@ public interface Application {
 
 	String getName();
 
-	Map<String, String> getVmsDNS();
+	Map<String, String> getVmsDNS(DNSNameTrimmer trimmer);
 
 	Set<Boolean> compareVmsState(Application.STATE state)
 			throws ApplicationPublishException, ApplicationWrongStateException;
+
+	interface DNSNameTrimmer {
+		String trim(String name);
+	}
 
 }

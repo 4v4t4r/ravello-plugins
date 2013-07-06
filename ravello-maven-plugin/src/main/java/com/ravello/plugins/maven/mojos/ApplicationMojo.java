@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravello.plugins.common.Application;
+import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
 import com.ravello.plugins.common.impl.IOServiceImpl;
@@ -51,7 +52,13 @@ public abstract class ApplicationMojo extends RavelloMojo {
 			throws ApplicationPropertiesException {
 		File props = getPropFile();
 		IOService ioService = new IOServiceImpl();
-		ioService.writeToFile(props, application.getVmsDNS());
+		ioService.writeToFile(props,
+				application.getVmsDNS(new DNSNameTrimmer() {
+					@Override
+					public String trim(String name) {
+						return name.trim().toLowerCase().replace(' ', '_');
+					}
+				}));
 		return ioService.zipFile(props, getZipFilePath());
 	}
 

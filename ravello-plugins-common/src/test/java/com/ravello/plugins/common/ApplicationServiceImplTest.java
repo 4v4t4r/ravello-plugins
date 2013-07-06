@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
 import com.ravello.management.common.dtos.vm.VmDto;
+import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.common.impl.ApplicationServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
@@ -72,7 +73,7 @@ public class ApplicationServiceImplTest {
 
 	private static final class ApplicationImpl implements Application {
 		@Override
-		public Map<String, String> getVmsDNS() {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
 			return null;
 		}
 
@@ -90,7 +91,6 @@ public class ApplicationServiceImplTest {
 		public Set<Boolean> compareVmsState(STATE state)
 				throws ApplicationPublishException,
 				ApplicationWrongStateException {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	};

@@ -2,19 +2,19 @@ package com.ravello.plugins.maven;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+
+import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 
 public interface MavenHelper {
 
 	List<PluginHelper> findAllPlugins();
 
-	void updateConfiguration(Map<String, List<String>> propertiesMap,
-			Properties properties, List<PluginHelper> plugins);
+	void updatePluginsConfiguration(Map<String, String> propertiesMap);
 
-	void updateProperties(Map<String, List<String>> propertiesMap,
-			Properties properties);
+	void updateProperties(Map<String, String> dnsNamesPropertiesMap);
 
-	Map<String, List<String>> preparePropertiesMap(
-			Map<String, String> propertiesMap, Properties properties);
+	Map<String, String> preparePropertiesMap(Map<String, String> propertiesMap,
+			Map<String, String> dnsProperties)
+			throws ApplicationPropertiesException;
 
 }

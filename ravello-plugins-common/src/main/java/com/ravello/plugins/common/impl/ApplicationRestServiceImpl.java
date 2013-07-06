@@ -122,7 +122,7 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS() {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
 			List<VmDto> vms = applicationDto.getVms();
 			Map<String, String> map = new HashMap<String, String>();
 			for (VmDto vmDto : vms) {
@@ -130,7 +130,7 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 				VmRuntimeInformation runtimeInformation = vmProperties
 						.getRuntimeInformation();
 				runtimeInformation.getExternalFqdn();
-				map.put(vmProperties.getName(),
+				map.put(trimmer.trim(vmProperties.getName()),
 						runtimeInformation.getExternalFqdn());
 			}
 			return map;

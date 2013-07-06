@@ -81,7 +81,7 @@ public class BlueprintsRestServiceImpl implements BlueprintsRestService {
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS() {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
 			return null;
 		}
 
