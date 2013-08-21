@@ -76,10 +76,11 @@ public class IOServiceImpl implements IOService {
 
 		InputStream in = null;
 		BufferedOutputStream out = null;
+		ZipFile zipFile = null;
 
 		try {
-			ZipFile archive = new ZipFile(_file);
-			Enumeration<ZipEntry> enumeration = (Enumeration<ZipEntry>) archive
+			zipFile = new ZipFile(_file);
+			Enumeration<ZipEntry> enumeration = (Enumeration<ZipEntry>) zipFile
 					.entries();
 			while (enumeration.hasMoreElements()) {
 				ZipEntry entry = (ZipEntry) enumeration.nextElement();
@@ -90,7 +91,7 @@ public class IOServiceImpl implements IOService {
 					if (!extracted.getParentFile().exists()) {
 						extracted.getParentFile().mkdirs();
 					}
-					in = archive.getInputStream(entry);
+					in = zipFile.getInputStream(entry);
 					out = new BufferedOutputStream(new FileOutputStream(
 							extracted));
 					byte[] buffer = new byte[2048];
@@ -106,6 +107,7 @@ public class IOServiceImpl implements IOService {
 			try {
 				in.close();
 				out.close();
+				zipFile.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
