@@ -4,14 +4,14 @@
 	<parent>
 		<groupId>com.ravello.plugins</groupId>
 		<artifactId>ravello-plugins</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.BETA</version>
 	</parent>
 	<packaging>maven-plugin</packaging>
 	<artifactId>ravello-maven-plugin</artifactId>
-	<description>RavelloSystems maven plugin</description>
+	<description>RavelloSystems Maven Plugin</description>
 
 	<properties>
-		<mavenVersion>3.0.4</mavenVersion>
+		<mavenVersion>3.1.0</mavenVersion>
 		<mavenPluginVersion>3.1</mavenPluginVersion>
 	</properties>
 
@@ -20,7 +20,11 @@
 	</prerequisites>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>com.ravello.plugins</groupId>
+			<artifactId>ravello-plugins-common</artifactId>
+			<version>0.1.BETA</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
@@ -42,12 +46,6 @@
 			<artifactId>maven-artifact</artifactId>
 			<version>2.0.9</version>
 		</dependency>
-		<dependency>
-			<groupId>com.ravello.plugins</groupId>
-			<artifactId>ravello-plugins-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

@@ -53,20 +53,22 @@ public class InjectPropertiesMojo extends RavelloMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
+		if (Boolean.valueOf(skip)) {
+			getLog().info("inject-properties execution goal skipped");
+			return;
+		}
+		
+		getLog().info("do inject-properties execution goal");
+
 		try {
-			MavenHelper mavenHelper = new MavenHelperImpl(project,
-					reactorProjects);
-			ArtifactResolverHelper mvnArtifactResolver = new PluginArtifactResolver(
-					pluginDescriptor, resolver, remoteRepositories,
-					localRepository);
-			File propertiesZip = mvnArtifactResolver
-					.artifactToFile(ARTIFACT_ID_PEFIX);
+			MavenHelper mavenHelper = new MavenHelperImpl(project, reactorProjects);
+			ArtifactResolverHelper mvnArtifactResolver = new PluginArtifactResolver(pluginDescriptor, resolver,
+					remoteRepositories, localRepository);
+			File propertiesZip = mvnArtifactResolver.artifactToFile(ARTIFACT_ID_PEFIX);
 			IOService ioService = new IOServiceImpl();
 			ioService.unzipFile(propertiesZip, getTarget());
-			Map<String, String> dnsProperties = ioService
-					.readProperties(new File(getTarget(), propertiesFileName));
-			Map<String, String> dnsNamesPropertiesMap = mavenHelper
-					.preparePropertiesMap(propertiesMap, dnsProperties);
+			Map<String, String> dnsProperties = ioService.readProperties(new File(getTarget(), propertiesFileName));
+			Map<String, String> dnsNamesPropertiesMap = mavenHelper.preparePropertiesMap(propertiesMap, dnsProperties);
 			mavenHelper.updatePluginsConfiguration(dnsNamesPropertiesMap);
 			mavenHelper.updateProperties(dnsNamesPropertiesMap);
 		} catch (ApplicationPropertiesException e) {

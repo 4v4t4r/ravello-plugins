@@ -3,9 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravello.plugins</groupId>
 	<artifactId>ravello-plugins</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ravello-plugins</name>
+	<version>0.1.BETA</version>
+
 	<modules>
 		<module>ravello-maven-plugin</module>
 		<module>ravello-jenkins-plugin</module>
@@ -13,6 +14,7 @@
 	</modules>
 
 	<properties>
+		<ravello.api.version>0.0.1-SNAPSHOT</ravello.api.version>
 		<spring-version>3.2.2.RELEASE</spring-version>
 	</properties>
 
@@ -20,9 +22,8 @@
 		<dependency>
 			<groupId>com.ravello.auto</groupId>
 			<artifactId>rest-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${ravello.api.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -74,7 +75,6 @@
 			<name>management-svn-releases</name>
 			<url>http://10.0.2.67:8081/artifactory/plugins-release-local</url>
 		</repository>
-
 		<snapshotRepository>
 			<id>management-svn</id>
 			<name>management-svn-releases</name>
