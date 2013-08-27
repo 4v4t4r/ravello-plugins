@@ -122,13 +122,21 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) throws ApplicationWrongStateException {
 			List<VmDto> vms = applicationDto.getVms();
 			Map<String, String> map = new HashMap<String, String>();
 			for (VmDto vmDto : vms) {
 				VmPropertiesDto vmProperties = vmDto.getVmProperties();
 				VmRuntimeInformation runtimeInformation = vmProperties
 						.getRuntimeInformation();
+
+				if (runtimeInformation == null) {
+					throw new ApplicationWrongStateException(
+							String.format(
+									"Can't find runtime info of %s application. Is started?",
+									getName()));
+				}
+
 				runtimeInformation.getExternalFqdn();
 				map.put(trimmer.trim(vmProperties.getName()),
 						runtimeInformation.getExternalFqdn());

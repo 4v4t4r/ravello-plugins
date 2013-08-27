@@ -10,6 +10,7 @@ import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
 import com.ravello.plugins.common.impl.IOServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
+import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public abstract class ApplicationMojo extends RavelloMojo {
 
@@ -49,7 +50,8 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	protected String delay;
 
 	protected File createZip(Application application)
-			throws ApplicationPropertiesException {
+			throws ApplicationPropertiesException,
+			ApplicationWrongStateException {
 		File props = getPropFile();
 		IOService ioService = new IOServiceImpl();
 		ioService.writeToFile(props,
