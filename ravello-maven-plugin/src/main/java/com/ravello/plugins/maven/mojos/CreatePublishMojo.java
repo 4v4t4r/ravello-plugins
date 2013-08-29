@@ -15,22 +15,23 @@ import com.ravello.plugins.exceptions.RavelloPluginException;
 @Mojo(name = "app-create-publish", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
 public class CreatePublishMojo extends ApplicationMojo {
 
-	@Parameter(property = "blueprintId", required = true)
-	private Long blueprintId;
-
 	@Parameter(property = "applicationName", required = true)
 	private String applicationName;
 
+	@Parameter(property = "blueprintName", required = true)
+	protected String blueprintName;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		RavelloRestFactory ravelloBuilder = RavelloRestFactory
-				.get(new CredentialsImpl());
-		BlueprintService blueprintService = ravelloBuilder.blueprint();
-		ApplicationService applicationService = ravelloBuilder.application();
 		try {
+			RavelloRestFactory ravelloBuilder = RavelloRestFactory
+					.get(new CredentialsImpl());
+			Publisher publisher = getPublisher();
+			BlueprintService blueprintService = ravelloBuilder.blueprint();
+			ApplicationService applicationService = ravelloBuilder
+					.application();
 			Application application = blueprintService.createApplication(
-					blueprintId, applicationName);
-			applicationService.publish(application.getId(), preferredCloud,
-					preferredCloud);
+					blueprintName, applicationName);
+			publisher.doPublish(application, applicationService);
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (Exception e) {

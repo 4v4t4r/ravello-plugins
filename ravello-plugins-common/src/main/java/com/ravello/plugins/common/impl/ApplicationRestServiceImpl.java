@@ -17,6 +17,7 @@ import com.ravello.auto.mgmt.rest.ApplicationClient;
 import com.ravello.auto.rest.client.common.types.RestResponse;
 import com.ravello.management.common.dtos.application.ApplicationDto;
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
+import com.ravello.management.common.dtos.publish.PublishOptimizationDto;
 import com.ravello.management.common.dtos.vm.GuestStateDto;
 import com.ravello.management.common.dtos.vm.VmDto;
 import com.ravello.management.common.dtos.vm.VmPropertiesDto;
@@ -41,7 +42,8 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 	}
 
 	@Override
-	public void start(long appId) {
+	public void start(long appId, int autoStop) {
+		setAppExpiration(appId, autoStop);
 		ApplicationDto applicationDto = findApplicationDto(appId);
 		List<VmDto> vms = applicationDto.getVms();
 		for (VmDto vmDto : vms) {
@@ -92,8 +94,28 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 	}
 
 	@Override
-	public void publish(long appId, String preferredCloud, String preferredZone) {
+	public void publishPerformanceOptimized(long appId, int autoStop) {
+		setAppExpiration(appId, autoStop);
+		client.publish(appId, "", "",
+				PublishOptimizationDto.PERFORMANCE_OPTIMIZED);
+	}
+
+	@Override
+	public void publishCostOptimized(long appId, int autoStop) {
+		setAppExpiration(appId, autoStop);
+		client.publish(appId, "", "", PublishOptimizationDto.COST_OPTIMIZED);
+	}
+
+	@Override
+	public void publish(long appId, String preferredCloud,
+			String preferredZone, int autoStop) {
+		setAppExpiration(appId, autoStop);
 		client.publish(appId, preferredCloud, preferredZone);
+	}
+
+	private void setAppExpiration(long appId, int autoStop) {
+		if (autoStop > 0)
+			client.setApplicationExpirationTime(appId, autoStop);
 	}
 
 	final class ApplicationImpl implements Application {
@@ -122,7 +144,8 @@ public class ApplicationRestServiceImpl implements ApplicationRestService {
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) throws ApplicationWrongStateException {
+		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer)
+				throws ApplicationWrongStateException {
 			List<VmDto> vms = applicationDto.getVms();
 			Map<String, String> map = new HashMap<String, String>();
 			for (VmDto vmDto : vms) {

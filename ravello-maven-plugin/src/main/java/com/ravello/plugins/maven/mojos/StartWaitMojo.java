@@ -18,7 +18,7 @@ public class StartWaitMojo extends ApplicationMojo {
 			ApplicationService service = RavelloRestFactory.get(
 					new CredentialsImpl()).application();
 			Application application = service.findApplication(applicationName);
-			service.start(application.getId());
+			service.start(application.getId(), autoStop);
 			service.awaitForApplicationState(application.getId(), timeout,
 					Application.STATE.STARTED);
 		} catch (RavelloPluginException e) {

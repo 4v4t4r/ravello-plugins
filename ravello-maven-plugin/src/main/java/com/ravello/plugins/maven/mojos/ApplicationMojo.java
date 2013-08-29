@@ -6,13 +6,18 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.Application.DNSNameTrimmer;
+import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
+import com.ravello.plugins.common.Utils;
 import com.ravello.plugins.common.impl.IOServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
+import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public abstract class ApplicationMojo extends RavelloMojo {
+
+	protected final static String serviceUrl = "https://cloud.ravellosystems.com/services";
 
 	@Parameter(property = "userName", required = true)
 	protected String userName;
@@ -20,22 +25,23 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	@Parameter(property = "password", required = true)
 	protected String password;
 
-	protected final static String serviceUrl = "https://cloud.ravellosystems.com/services";
-
-	@Parameter(property = "blueprintName", required = true)
-	protected String blueprintName;
+	@Parameter(property = "applicationName", required = true)
+	protected String applicationName;
 
 	@Parameter(property = "blueprintId")
 	protected Long blueprintId;
 
-	@Parameter(property = "applicationName", required = true)
-	protected String applicationName;
-
-	@Parameter(property = "preferredCloud", required = true)
+	@Parameter(property = "preferredCloud")
 	protected String preferredCloud;
 
-	@Parameter(property = "preferredZone", required = true)
+	@Parameter(property = "preferredZone")
 	protected String preferredZone;
+
+	@Parameter(property = "publishCostOptimized", defaultValue = "true")
+	protected String publishCostOptimized;
+
+	@Parameter(property = "publishPerformanceOptimized", defaultValue = "false")
+	protected String publishPerformanceOptimized;
 
 	@Parameter(property = "finalName")
 	protected String finalName;
@@ -48,6 +54,59 @@ public abstract class ApplicationMojo extends RavelloMojo {
 
 	@Parameter(property = "delay", defaultValue = "0")
 	protected String delay;
+
+	@Parameter(property = "autoStop", defaultValue = "0")
+	protected int autoStop;
+
+	protected interface Publisher {
+		void doPublish(Application application,
+				ApplicationService applicationService)
+				throws ApplicationPublishException;
+	}
+
+	protected Publisher getPublisher() throws ApplicationPublishException {
+
+		if (Boolean.valueOf(publishPerformanceOptimized)) {
+			return new Publisher() {
+				@Override
+				public void doPublish(Application application,
+						ApplicationService applicationService)
+						throws ApplicationPublishException {
+					applicationService.publishPerformanceOptimized(
+							application.getId(), autoStop);
+				}
+			};
+		}
+
+		if (!Utils.isEmpty(preferredCloud, preferredZone)) {
+			return new Publisher() {
+				@Override
+				public void doPublish(Application application,
+						ApplicationService applicationService)
+						throws ApplicationPublishException {
+					applicationService.publish(application.getId(),
+							preferredCloud, preferredZone, autoStop);
+				}
+			};
+		}
+
+		if (Boolean.valueOf(publishCostOptimized)) {
+			return new Publisher() {
+				@Override
+				public void doPublish(Application application,
+						ApplicationService applicationService)
+						throws ApplicationPublishException {
+					applicationService.publishCostOptimized(
+							application.getId(), autoStop);
+				}
+			};
+		}
+
+		throw new ApplicationPublishException("Publish rules not set. "
+				+ "Please select (prefered cloud and zone) "
+				+ "or (optimized publish mode).");
+
+	}
 
 	protected File createZip(Application application)
 			throws ApplicationPropertiesException,

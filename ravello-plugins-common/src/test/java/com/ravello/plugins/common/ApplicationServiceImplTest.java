@@ -98,8 +98,8 @@ public class ApplicationServiceImplTest {
 	@Test
 	public void testPublish() {
 		try {
-			this.service.publish(app.getId(), "pc", "pz");
-			verify(restService, times(1)).publish(app.getId(), "pc", "pz");
+			this.service.publish(app.getId(), "pc", "pz", 600);
+			verify(restService, times(1)).publish(app.getId(), "pc", "pz", 600);
 		} catch (ApplicationPublishException e) {
 			fail(e.getMessage());
 		}
@@ -172,8 +172,8 @@ public class ApplicationServiceImplTest {
 	public void testPublishShouldThrowApplicationPublishException() {
 		try {
 			doThrow(new RuntimeException()).when(restService).publish(
-					app.getId(), "pc", "pz");
-			this.service.publish(app.getId(), "pc", "pz");
+					app.getId(), "pc", "pz", 600);
+			this.service.publish(app.getId(), "pc", "pz", 600);
 			fail("should've thrown an exception!");
 		} catch (Exception e) {
 			Assert.isTrue(e instanceof ApplicationPublishException);

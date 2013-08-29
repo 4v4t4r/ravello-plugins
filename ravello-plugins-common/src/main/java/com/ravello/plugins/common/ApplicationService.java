@@ -9,7 +9,19 @@ import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public interface ApplicationService {
 
-	void publish(long appId, String preferredCloud, String preferredZone)
+	void start(long appId, int autoStop) throws ApplicationStartException;
+
+	void stop(long appId) throws ApplicationStopException;
+
+	void delete(long appId) throws ApplicationDeleteException;
+
+	void publish(long appId, String preferredCloud, String preferredZone,
+			int autoStop) throws ApplicationPublishException;
+
+	void publishCostOptimized(long appId, int autoStop)
+			throws ApplicationPublishException;
+
+	void publishPerformanceOptimized(long appId, int autoStop)
 			throws ApplicationPublishException;
 
 	void setRestClient(ApplicationRestService restService);
@@ -26,11 +38,5 @@ public interface ApplicationService {
 
 	Application findApplication(String appName)
 			throws ApplicationNotFoundException;
-
-	void start(long appId) throws ApplicationStartException;
-
-	void stop(long appId) throws ApplicationStopException;
-
-	void delete(long appId) throws ApplicationDeleteException;
 
 }

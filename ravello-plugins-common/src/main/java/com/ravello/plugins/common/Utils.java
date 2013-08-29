@@ -21,6 +21,14 @@ public final class Utils {
 		return string == null || string.isEmpty();
 	}
 
+	public final static Boolean isEmpty(String... strings) {
+		for (String string : strings) {
+			if (string == null || string.isEmpty())
+				return true;
+		}
+		return false;
+	}
+
 	public final static <T> T safeIterNext(Iterable<T> iterable) {
 		Iterable<T> it = safeIter(iterable);
 		if (it.iterator().hasNext())

@@ -12,16 +12,13 @@ import com.ravello.plugins.exceptions.RavelloPluginException;
 @Mojo(name = "app-create", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
 public class CreateMojo extends ApplicationMojo {
 
-	@Parameter(property = "blueprintId", required = true)
-	private Long blueprintId;
-
-	@Parameter(property = "applicationName", required = true)
-	private String applicationName;
+	@Parameter(property = "blueprintName", required = true)
+	protected String blueprintName;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			RavelloRestFactory.get(new CredentialsImpl()).blueprint()
-					.createApplication(blueprintId, applicationName);
+					.createApplication(blueprintName, applicationName);
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (Exception e) {

@@ -31,10 +31,31 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public void publish(long appId, String preferredCloud, String preferredZone)
+	public void publishCostOptimized(long appId, int autoStop)
 			throws ApplicationPublishException {
 		try {
-			restService.publish(appId, preferredCloud, preferredZone);
+			restService.publishCostOptimized(appId, autoStop);
+		} catch (Exception e) {
+			throw new ApplicationPublishException(e);
+		}
+	}
+
+	@Override
+	public void publishPerformanceOptimized(long appId, int autoStop)
+			throws ApplicationPublishException {
+		try {
+			restService.publishPerformanceOptimized(appId, autoStop);
+		} catch (Exception e) {
+			throw new ApplicationPublishException(e);
+		}
+	}
+
+	@Override
+	public void publish(long appId, String preferredCloud,
+			String preferredZone, int autoStop)
+			throws ApplicationPublishException {
+		try {
+			restService.publish(appId, preferredCloud, preferredZone, autoStop);
 		} catch (Exception e) {
 			throw new ApplicationPublishException(e);
 		}
@@ -59,9 +80,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
-	public void start(long appId) throws ApplicationStartException {
+	public void start(long appId, int autoStop)
+			throws ApplicationStartException {
 		try {
-			restService.start(appId);
+			restService.start(appId, autoStop);
 		} catch (Exception e) {
 			throw new ApplicationStartException(e);
 		}
