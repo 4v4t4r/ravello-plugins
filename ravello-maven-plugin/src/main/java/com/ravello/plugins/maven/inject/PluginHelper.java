@@ -20,23 +20,21 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven;
+package com.ravello.plugins.maven.inject;
 
-import java.util.List;
-import java.util.Map;
+import org.apache.maven.model.Plugin;
 
-import com.ravello.plugins.exceptions.ApplicationPropertiesException;
+public class PluginHelper {
 
-public interface MavenHelper {
+	private Plugin plugin;
 
-	List<PluginHelper> findAllPlugins();
+	public PluginHelper(Plugin plugin) {
+		this.plugin = plugin;
+	}
 
-	void updatePluginsConfiguration(Map<String, String> propertiesMap);
-
-	void updateProperties(Map<String, String> dnsNamesPropertiesMap);
-
-	Map<String, String> preparePropertiesMap(Map<String, String> propertiesMap,
-			Map<String, String> dnsProperties)
-			throws ApplicationPropertiesException;
+	public PluginConfigurationHelper getConfiguration() {
+		Object configuration = plugin.getConfiguration();
+		return new PluginConfigurationHelper(configuration);
+	}
 
 }

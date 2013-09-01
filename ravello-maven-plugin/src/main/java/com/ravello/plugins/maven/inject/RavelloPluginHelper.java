@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.impl;
+package com.ravello.plugins.maven.inject;
 
 import static com.ravello.plugins.common.Utils.isEmpty;
 
@@ -35,16 +35,13 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
-import com.ravello.plugins.maven.MavenHelper;
-import com.ravello.plugins.maven.PluginConfigurationHelper;
-import com.ravello.plugins.maven.PluginHelper;
 
-public class MavenHelperImpl implements MavenHelper {
+public class RavelloPluginHelper implements MavenHelper {
 
 	private List<MavenProject> reactorProjects;
 	private MavenProject project;
 
-	public MavenHelperImpl(MavenProject project,
+	public RavelloPluginHelper(MavenProject project,
 			List<MavenProject> reactorProjects) {
 		this.project = project;
 		this.reactorProjects = reactorProjects;
@@ -103,7 +100,7 @@ public class MavenHelperImpl implements MavenHelper {
 		for (MavenProject mavenProject : reactorProjects) {
 			List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
 			for (Plugin plugin : buildPlugins) {
-				mvnPlugins.add(new PluginHelperImpl(plugin));
+				mvnPlugins.add(new PluginHelper(plugin));
 			}
 		}
 		return mvnPlugins;

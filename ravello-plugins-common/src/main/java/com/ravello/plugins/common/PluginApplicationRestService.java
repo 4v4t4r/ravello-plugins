@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.common.impl;
+package com.ravello.plugins.common;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -44,17 +44,15 @@ import com.ravello.management.common.dtos.vm.GuestStateDto;
 import com.ravello.management.common.dtos.vm.VmDto;
 import com.ravello.management.common.dtos.vm.VmPropertiesDto;
 import com.ravello.management.common.dtos.vm.VmRuntimeInformation;
-import com.ravello.plugins.common.Application;
-import com.ravello.plugins.common.ApplicationRestService;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
-public class ApplicationRestServiceImpl implements ApplicationRestService {
+public class PluginApplicationRestService implements ApplicationRestService {
 
 	private ApplicationClient client;
 
-	public ApplicationRestServiceImpl(ApplicationClient client) {
+	public PluginApplicationRestService(ApplicationClient client) {
 		this.client = client;
 	}
 

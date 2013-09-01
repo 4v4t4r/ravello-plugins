@@ -22,7 +22,6 @@ import org.springframework.util.Assert;
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
 import com.ravello.management.common.dtos.vm.VmDto;
 import com.ravello.plugins.common.Application.DNSNameTrimmer;
-import com.ravello.plugins.common.impl.ApplicationServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
@@ -58,7 +57,7 @@ public class ApplicationServiceImplTest {
 		this.propsDto = new ApplicationPropertiesDto();
 		this.propsDto.setName("bp");
 		this.propsDto.setId(1L);
-		this.service = new ApplicationServiceImpl();
+		this.service = new PluginApplicationService();
 		this.service.setRestClient(restService);
 		this.serviceSpy = spy(this.service);
 		this.serviceSpy.setRestClient(restService);

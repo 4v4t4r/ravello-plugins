@@ -19,7 +19,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.Assert;
 
 import com.ravello.plugins.common.Application.DNSNameTrimmer;
-import com.ravello.plugins.common.impl.BlueprintServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationCreateException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
@@ -39,7 +38,7 @@ public class BlueprintServiceImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.service = new BlueprintServiceImpl();
+		this.service = new PluginBlueprintService();
 		this.serviceSpy = spy(service);
 		this.serviceSpy.setRestClient(restService);
 	}

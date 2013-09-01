@@ -38,13 +38,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import com.ravello.plugins.common.IOService;
-import com.ravello.plugins.common.impl.IOServiceImpl;
+import com.ravello.plugins.common.PluginIOService;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.exceptions.ApplicationPropertiesNotFoundException;
-import com.ravello.plugins.maven.ArtifactResolverHelper;
-import com.ravello.plugins.maven.MavenHelper;
-import com.ravello.plugins.maven.impl.MavenHelperImpl;
-import com.ravello.plugins.maven.impl.PluginArtifactResolver;
+import com.ravello.plugins.maven.inject.ArtifactFinder;
+import com.ravello.plugins.maven.inject.PluginArtifactFinder;
+import com.ravello.plugins.maven.inject.MavenHelper;
+import com.ravello.plugins.maven.inject.RavelloPluginHelper;
 
 @Mojo(name = "inject-properties", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class InjectPropertiesMojo extends RavelloMojo {
@@ -83,11 +83,11 @@ public class InjectPropertiesMojo extends RavelloMojo {
 		getLog().info("do inject-properties execution goal");
 
 		try {
-			MavenHelper mavenHelper = new MavenHelperImpl(project, reactorProjects);
-			ArtifactResolverHelper mvnArtifactResolver = new PluginArtifactResolver(pluginDescriptor, resolver,
+			MavenHelper mavenHelper = new RavelloPluginHelper(project, reactorProjects);
+			ArtifactFinder mvnArtifactResolver = new PluginArtifactFinder(pluginDescriptor, resolver,
 					remoteRepositories, localRepository);
 			File propertiesZip = mvnArtifactResolver.artifactToFile(ARTIFACT_ID_PEFIX);
-			IOService ioService = new IOServiceImpl();
+			IOService ioService = new PluginIOService();
 			ioService.unzipFile(propertiesZip, getTarget());
 			Map<String, String> dnsProperties = ioService.readProperties(new File(getTarget(), propertiesFileName));
 			Map<String, String> dnsNamesPropertiesMap = mavenHelper.preparePropertiesMap(propertiesMap, dnsProperties);

@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.common.impl;
+package com.ravello.plugins.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +31,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.Application.STATE;
-import com.ravello.plugins.common.ApplicationRestService;
-import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.exceptions.ApplicationDeleteException;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
@@ -42,12 +39,12 @@ import com.ravello.plugins.exceptions.ApplicationStartException;
 import com.ravello.plugins.exceptions.ApplicationStopException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
-public class ApplicationServiceImpl implements ApplicationService {
+public class PluginApplicationService implements ApplicationService {
 
 	private ApplicationRestService restService;
 	private Map<Application.STATE, StateTask> stateTasks = new HashMap<Application.STATE, StateTask>();
 
-	public ApplicationServiceImpl() {
+	public PluginApplicationService() {
 		this.stateTasks.put(STATE.STARTED, new StartedTask());
 		this.stateTasks.put(STATE.STOPPED, new StoppedTask());
 	}

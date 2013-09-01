@@ -25,10 +25,6 @@ package com.ravello.plugins.common;
 import com.ravello.auto.mgmt.rest.ApplicationClient;
 import com.ravello.auto.mgmt.rest.BlueprintsClient;
 import com.ravello.auto.mgmt.rest.RestClient;
-import com.ravello.plugins.common.impl.ApplicationRestServiceImpl;
-import com.ravello.plugins.common.impl.ApplicationServiceImpl;
-import com.ravello.plugins.common.impl.BlueprintServiceImpl;
-import com.ravello.plugins.common.impl.BlueprintsRestServiceImpl;
 
 public final class RavelloRestFactory {
 
@@ -52,18 +48,18 @@ public final class RavelloRestFactory {
 
 	public final ApplicationService application() {
 		ApplicationClient client = new ApplicationClient(restClient);
-		ApplicationRestService restService = new ApplicationRestServiceImpl(
+		ApplicationRestService restService = new PluginApplicationRestService(
 				client);
-		ApplicationService service = new ApplicationServiceImpl();
+		ApplicationService service = new PluginApplicationService();
 		service.setRestClient(restService);
 		return service;
 	}
 
 	public final BlueprintService blueprint() {
 		BlueprintsClient client = new BlueprintsClient(restClient);
-		BlueprintsRestService restService = new BlueprintsRestServiceImpl(
+		BlueprintsRestService restService = new PluginBlueprintsRestService(
 				client);
-		BlueprintService service = new BlueprintServiceImpl();
+		BlueprintService service = new PluginBlueprintService();
 		service.setRestClient(restService);
 		return service;
 	}

@@ -20,24 +20,21 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.impl;
+package com.ravello.plugins.maven.inject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import com.ravello.plugins.maven.PluginConfigurationHelper;
-
-public class PluginConfigurationImpl implements PluginConfigurationHelper {
+public class PluginConfigurationHelper {
 
 	private Xpp3Dom configuration;
 
-	public PluginConfigurationImpl(Object configuration) {
+	public PluginConfigurationHelper(Object configuration) {
 		this.configuration = (Xpp3Dom) configuration;
 	}
 
-	@Override
 	public boolean updateValue(String placeholder, String value) {
 		if (!valid(configuration))
 			return false;

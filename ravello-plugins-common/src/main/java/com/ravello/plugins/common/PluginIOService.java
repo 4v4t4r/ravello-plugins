@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.common.impl;
+package com.ravello.plugins.common;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -37,10 +37,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import com.ravello.plugins.common.IOService;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 
-public class IOServiceImpl implements IOService {
+public class PluginIOService implements IOService {
 
 	@Override
 	public void writeToFile(File file, Map<String, String> properties)

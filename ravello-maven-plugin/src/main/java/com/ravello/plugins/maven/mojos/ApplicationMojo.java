@@ -31,8 +31,8 @@ import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
+import com.ravello.plugins.common.PluginIOService;
 import com.ravello.plugins.common.Utils;
-import com.ravello.plugins.common.impl.IOServiceImpl;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
@@ -134,7 +134,7 @@ public abstract class ApplicationMojo extends RavelloMojo {
 			throws ApplicationPropertiesException,
 			ApplicationWrongStateException {
 		File props = getPropFile();
-		IOService ioService = new IOServiceImpl();
+		IOService ioService = new PluginIOService();
 		ioService.writeToFile(props,
 				application.getVmsDNS(new DNSNameTrimmer() {
 					@Override

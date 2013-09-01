@@ -20,10 +20,15 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven;
+package com.ravello.plugins.maven.inject;
 
-public interface PluginConfigurationHelper {
+import java.io.File;
 
-	boolean updateValue(String placeholder, String value);
+import com.ravello.plugins.exceptions.ApplicationPropertiesNotFoundException;
+
+public interface ArtifactFinder {
+
+	File artifactToFile(String artifactId)
+			throws ApplicationPropertiesNotFoundException;
 
 }

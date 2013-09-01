@@ -20,15 +20,12 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.common.impl;
+package com.ravello.plugins.common;
 
-import com.ravello.plugins.common.Application;
-import com.ravello.plugins.common.BlueprintService;
-import com.ravello.plugins.common.BlueprintsRestService;
 import com.ravello.plugins.exceptions.ApplicationCreateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
 
-public class BlueprintServiceImpl implements BlueprintService {
+public class PluginBlueprintService implements BlueprintService {
 
 	private BlueprintsRestService restService;
 

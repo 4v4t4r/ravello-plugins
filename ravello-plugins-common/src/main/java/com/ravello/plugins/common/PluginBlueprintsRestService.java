@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.common.impl;
+package com.ravello.plugins.common;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -38,17 +38,15 @@ import com.ravello.auto.mgmt.rest.BlueprintsClient;
 import com.ravello.auto.rest.client.common.types.RestResponse;
 import com.ravello.management.common.dtos.application.ApplicationDto;
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
-import com.ravello.plugins.common.Application;
-import com.ravello.plugins.common.BlueprintsRestService;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
 
-public class BlueprintsRestServiceImpl implements BlueprintsRestService {
+public class PluginBlueprintsRestService implements BlueprintsRestService {
 
 	private BlueprintsClient client;
 
-	public BlueprintsRestServiceImpl(BlueprintsClient client) {
+	public PluginBlueprintsRestService(BlueprintsClient client) {
 		this.client = client;
 	}
 
