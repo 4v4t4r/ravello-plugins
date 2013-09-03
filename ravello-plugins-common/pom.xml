@@ -8,11 +8,4 @@
 	</parent>
 	<artifactId>ravello-plugins-common</artifactId>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.googlecode.lambdaj</groupId>
-			<artifactId>lambdaj</artifactId>
-			<version>2.3.3</version>
-		</dependency>
-	</dependencies>
 </project>

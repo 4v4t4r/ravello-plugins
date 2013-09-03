@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -50,8 +49,7 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void publishCostOptimized(long appId, int autoStop)
-			throws ApplicationPublishException {
+	public void publishCostOptimized(long appId, int autoStop) throws ApplicationPublishException {
 		try {
 			restService.publishCostOptimized(appId, autoStop);
 		} catch (Exception e) {
@@ -60,8 +58,7 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void publishPerformanceOptimized(long appId, int autoStop)
-			throws ApplicationPublishException {
+	public void publishPerformanceOptimized(long appId, int autoStop) throws ApplicationPublishException {
 		try {
 			restService.publishPerformanceOptimized(appId, autoStop);
 		} catch (Exception e) {
@@ -70,8 +67,7 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void publish(long appId, String preferredCloud,
-			String preferredZone, int autoStop)
+	public void publish(long appId, String preferredCloud, String preferredZone, int autoStop)
 			throws ApplicationPublishException {
 		try {
 			restService.publish(appId, preferredCloud, preferredZone, autoStop);
@@ -99,8 +95,7 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void start(long appId, int autoStop)
-			throws ApplicationStartException {
+	public void start(long appId, int autoStop) throws ApplicationStartException {
 		try {
 			restService.start(appId, autoStop);
 		} catch (Exception e) {
@@ -109,8 +104,8 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void awaitForApplicationState(long appId, long timeout, STATE state)
-			throws ApplicationStartException, ApplicationWrongStateException {
+	public void awaitForApplicationState(long appId, long timeout, STATE state) throws ApplicationStartException,
+			ApplicationWrongStateException {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		StateTask stateTask = stateTasks.get(state);
 		stateTask.appId = appId;
@@ -131,22 +126,20 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public boolean checkState(long appId, STATE state)
-			throws ApplicationPublishException, ApplicationWrongStateException,
-			ApplicationNotFoundException {
+	public boolean checkState(long appId, STATE state) throws ApplicationPublishException,
+			ApplicationWrongStateException, ApplicationNotFoundException {
 		Application application = restService.findApplication(appId);
+		application.validateVMsState();
 		return application.compareVmsState(state).contains(false);
 	}
 
 	@Override
-	public Application findApplication(String appName)
-			throws ApplicationNotFoundException {
+	public Application findApplication(String appName) throws ApplicationNotFoundException {
 		return restService.findApplication(appName);
 	}
 
 	@Override
-	public Application findApplication(long appId)
-			throws ApplicationNotFoundException {
+	public Application findApplication(long appId) throws ApplicationNotFoundException {
 		return restService.findApplication(appId);
 	}
 

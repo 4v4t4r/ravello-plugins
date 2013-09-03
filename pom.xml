@@ -14,16 +14,25 @@
 	</modules>
 
 	<properties>
-		<ravello.api.version>0.0.1-SNAPSHOT</ravello.api.version>
 		<spring-version>3.2.2.RELEASE</spring-version>
 	</properties>
 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<dependencies>
+
 		<dependency>
-			<groupId>com.ravello.auto</groupId>
-			<artifactId>rest-api</artifactId>
-			<version>${ravello.api.version}</version>
+			<groupId>com.ravello.restapi</groupId>
+			<artifactId>ravello-restapi</artifactId>
+			<version>0.1.BETA</version>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

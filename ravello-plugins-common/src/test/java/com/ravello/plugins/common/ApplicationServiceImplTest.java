@@ -21,7 +21,6 @@ import org.springframework.util.Assert;
 
 import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
 import com.ravello.management.common.dtos.vm.VmDto;
-import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
@@ -71,10 +70,6 @@ public class ApplicationServiceImplTest {
 	}
 
 	private static final class ApplicationImpl implements Application {
-		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
-			return null;
-		}
 
 		@Override
 		public String getName() {
@@ -87,10 +82,20 @@ public class ApplicationServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
+		public Set<Boolean> compareVmsState(STATE state) throws ApplicationWrongStateException {
 			return null;
+		}
+
+		@Override
+		public Map<String, String> getVMsDNS() throws ApplicationWrongStateException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public void validateVMsState() throws ApplicationWrongStateException {
+			// TODO Auto-generated method stub
+			
 		}
 	};
 
@@ -170,8 +175,7 @@ public class ApplicationServiceImplTest {
 	@Test
 	public void testPublishShouldThrowApplicationPublishException() {
 		try {
-			doThrow(new RuntimeException()).when(restService).publish(
-					app.getId(), "pc", "pz", 600);
+			doThrow(new RuntimeException()).when(restService).publish(app.getId(), "pc", "pz", 600);
 			this.service.publish(app.getId(), "pc", "pz", 600);
 			fail("should've thrown an exception!");
 		} catch (Exception e) {

@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -27,10 +26,10 @@ import java.io.File;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravello.plugins.common.Application;
-import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
+import com.ravello.plugins.common.IOService.PropertyKeyTrimmer;
 import com.ravello.plugins.common.PluginIOService;
 import com.ravello.plugins.common.Utils;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
@@ -81,8 +80,7 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	protected int autoStop;
 
 	protected interface Publisher {
-		void doPublish(Application application,
-				ApplicationService applicationService)
+		void doPublish(Application application, ApplicationService applicationService)
 				throws ApplicationPublishException;
 	}
 
@@ -91,11 +89,9 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		if (Boolean.valueOf(publishPerformanceOptimized)) {
 			return new Publisher() {
 				@Override
-				public void doPublish(Application application,
-						ApplicationService applicationService)
+				public void doPublish(Application application, ApplicationService applicationService)
 						throws ApplicationPublishException {
-					applicationService.publishPerformanceOptimized(
-							application.getId(), autoStop);
+					applicationService.publishPerformanceOptimized(application.getId(), autoStop);
 				}
 			};
 		}
@@ -103,11 +99,9 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		if (!Utils.isEmpty(preferredCloud, preferredZone)) {
 			return new Publisher() {
 				@Override
-				public void doPublish(Application application,
-						ApplicationService applicationService)
+				public void doPublish(Application application, ApplicationService applicationService)
 						throws ApplicationPublishException {
-					applicationService.publish(application.getId(),
-							preferredCloud, preferredZone, autoStop);
+					applicationService.publish(application.getId(), preferredCloud, preferredZone, autoStop);
 				}
 			};
 		}
@@ -115,34 +109,29 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		if (Boolean.valueOf(publishCostOptimized)) {
 			return new Publisher() {
 				@Override
-				public void doPublish(Application application,
-						ApplicationService applicationService)
+				public void doPublish(Application application, ApplicationService applicationService)
 						throws ApplicationPublishException {
-					applicationService.publishCostOptimized(
-							application.getId(), autoStop);
+					applicationService.publishCostOptimized(application.getId(), autoStop);
 				}
 			};
 		}
 
-		throw new ApplicationPublishException("Publish rules not set. "
-				+ "Please select (prefered cloud and zone) "
+		throw new ApplicationPublishException("Publish rules not set. " + "Please select (prefered cloud and zone) "
 				+ "or (optimized publish mode).");
 
 	}
 
-	protected File createZip(Application application)
-			throws ApplicationPropertiesException,
+	protected File createZip(Application application) throws ApplicationPropertiesException,
 			ApplicationWrongStateException {
-		File props = getPropFile();
+		File propertiesFile = getPropFile();
 		IOService ioService = new PluginIOService();
-		ioService.writeToFile(props,
-				application.getVmsDNS(new DNSNameTrimmer() {
-					@Override
-					public String trim(String name) {
-						return name.trim().toLowerCase().replace(' ', '_');
-					}
-				}));
-		return ioService.zipFile(props, getZipFilePath());
+		ioService.writeToPropertiesFile(propertiesFile, application.getVMsDNS(), new PropertyKeyTrimmer() {
+			@Override
+			public String trim(String name) {
+				return name.trim().toLowerCase().replace(' ', '_');
+			}
+		});
+		return ioService.zipFile(propertiesFile, getZipFilePath());
 	}
 
 	protected void delay() {
@@ -157,8 +146,7 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		if (classifier == null || classifier.trim().isEmpty())
 			classifier = String.valueOf(appId);
 		getLog().info(
-				String.format("attach: %s %s %s", project.getGroupId(),
-						project.getArtifactId(), project.getPackaging()));
+				String.format("attach: %s %s %s", project.getGroupId(), project.getArtifactId(), project.getPackaging()));
 		projectHelper.attachArtifact(project, "zip", classifier, zip);
 	}
 

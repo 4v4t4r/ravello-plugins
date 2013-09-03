@@ -40,16 +40,22 @@ public class CreatePublishMojo extends ApplicationMojo {
 	@Parameter(property = "blueprintName", required = true)
 	protected String blueprintName;
 
+	protected RavelloRestFactory ravelloBuilder;
+	protected BlueprintService blueprintService;
+	protected ApplicationService applicationService;
+	protected Application application;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			RavelloRestFactory ravelloBuilder = RavelloRestFactory
-					.get(new CredentialsImpl());
+			getLog().info("ravello: login");
+			ravelloBuilder = RavelloRestFactory.get(new CredentialsImpl());
+			blueprintService = ravelloBuilder.blueprint();
+			getLog().info("ravello: create app");
+			application = blueprintService.createApplication(blueprintName,
+					applicationName);
+			applicationService = ravelloBuilder.application();
+			getLog().info("ravello: publish app");
 			Publisher publisher = getPublisher();
-			BlueprintService blueprintService = ravelloBuilder.blueprint();
-			ApplicationService applicationService = ravelloBuilder
-					.application();
-			Application application = blueprintService.createApplication(
-					blueprintName, applicationName);
 			publisher.doPublish(application, applicationService);
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);

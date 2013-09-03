@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -22,205 +21,126 @@
 
 package com.ravello.plugins.common;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static com.ravello.plugins.common.Utils.safeIterNext;
-
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hamcrest.Matchers;
-
-import com.ravello.auto.mgmt.rest.ApplicationClient;
-import com.ravello.auto.rest.client.common.types.RestResponse;
-import com.ravello.management.common.dtos.application.ApplicationDto;
-import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
-import com.ravello.management.common.dtos.publish.PublishOptimizationDto;
-import com.ravello.management.common.dtos.vm.GuestStateDto;
-import com.ravello.management.common.dtos.vm.VmDto;
-import com.ravello.management.common.dtos.vm.VmPropertiesDto;
-import com.ravello.management.common.dtos.vm.VmRuntimeInformation;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
-import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
+import com.ravello.restapi.RavelloApplication;
+import com.ravello.restapi.RavelloApplicationClient;
+import com.ravello.restapi.RavelloRestService;
 
 public class PluginApplicationRestService implements ApplicationRestService {
 
-	private ApplicationClient client;
+	private RavelloApplicationClient client;
 
-	public PluginApplicationRestService(ApplicationClient client) {
+	public PluginApplicationRestService(RavelloApplicationClient client) {
 		this.client = client;
 	}
 
 	@Override
 	public void delete(long appId) {
-		client.deleteApplicationInstance(appId);
+		RavelloRestService.deleteApplication(client, appId);
 	}
 
 	@Override
 	public void start(long appId, int autoStop) {
-		setAppExpiration(appId, autoStop);
-		ApplicationDto applicationDto = findApplicationDto(appId);
-		List<VmDto> vms = applicationDto.getVms();
-		for (VmDto vmDto : vms) {
-			client.startGuest(appId, vmDto.getVmProperties().getId());
-		}
+		RavelloRestService.startApplication(client, appId, autoStop);
 	}
 
 	@Override
 	public void stop(long appId) {
-		ApplicationDto applicationDto = findApplicationDto(appId);
-		List<VmDto> vms = applicationDto.getVms();
-		for (VmDto vmDto : vms) {
-			client.stopGuest(appId, vmDto.getVmProperties().getId());
-		}
-	}
-
-	private ApplicationPropertiesDto findApplicationPropertiesDto(String appName)
-			throws ApplicationNotFoundException {
-		RestResponse<List<ApplicationPropertiesDto>> response = client
-				.getApplicationsList();
-		List<ApplicationPropertiesDto> propertiesList = response.getDto();
-		ApplicationPropertiesDto propertiesDto = safeIterNext(select(
-				propertiesList,
-				having(on(ApplicationPropertiesDto.class).getName(),
-						Matchers.equalTo(appName.trim()))));
-		if (propertiesDto == null)
-			throw new ApplicationNotFoundException(appName);
-		return propertiesDto;
+		RavelloRestService.stopApplication(client, appId);
 	}
 
 	@Override
-	public Application findApplication(String appName)
-			throws ApplicationNotFoundException {
-		ApplicationPropertiesDto propertiesDto = findApplicationPropertiesDto(appName);
-		return findApplication(propertiesDto.getId());
+	public Application findApplication(String appName) throws ApplicationNotFoundException {
+		RavelloApplication ravelloApplication = RavelloRestService.findApplication(client, appName);
+		if (ravelloApplication == null)
+			throw new ApplicationNotFoundException(appName + " not found.");
+		return findApplication(ravelloApplication.getId());
 	}
 
 	@Override
-	public Application findApplication(long appId) {
-		ApplicationDto applicationDto = findApplicationDto(appId);
-		return new ApplicationImpl(applicationDto);
-	}
-
-	private ApplicationDto findApplicationDto(long appId) {
-		RestResponse<ApplicationDto> response = client
-				.getApplicationInstance(appId);
-		return response.getDto();
+	public Application findApplication(long appId) throws ApplicationNotFoundException {
+		RavelloApplication ravelloApplication = RavelloRestService.findApplication(client, appId);
+		if (ravelloApplication == null)
+			throw new ApplicationNotFoundException(appId + " not found.");
+		return new ApplicationImpl(ravelloApplication);
 	}
 
 	@Override
 	public void publishPerformanceOptimized(long appId, int autoStop) {
-		setAppExpiration(appId, autoStop);
-		client.publish(appId, "", "",
-				PublishOptimizationDto.PERFORMANCE_OPTIMIZED);
+		RavelloRestService.publishPerformanceOptimized(client, appId, autoStop);
 	}
 
 	@Override
 	public void publishCostOptimized(long appId, int autoStop) {
-		setAppExpiration(appId, autoStop);
-		client.publish(appId, "", "", PublishOptimizationDto.COST_OPTIMIZED);
+		RavelloRestService.publishCostOptimized(client, appId, autoStop);
 	}
 
 	@Override
-	public void publish(long appId, String preferredCloud,
-			String preferredZone, int autoStop) {
-		setAppExpiration(appId, autoStop);
-		client.publish(appId, preferredCloud, preferredZone);
-	}
-
-	private void setAppExpiration(long appId, int autoStop) {
-		if (autoStop > 0)
-			client.setApplicationExpirationTime(appId, autoStop);
+	public void publish(long appId, String preferredCloud, String preferredZone, int autoStop) {
+		RavelloRestService.publish(client, appId, preferredCloud, preferredZone, autoStop);
 	}
 
 	final class ApplicationImpl implements Application {
 
-		private ApplicationDto applicationDto;
+		private RavelloApplication ravelloApplication;
 
-		public ApplicationImpl(ApplicationDto applicationDto) {
-			this.applicationDto = applicationDto;
-		}
-
-		public ApplicationImpl(String appName, ApplicationDto applicationDto)
-				throws ApplicationNotFoundException {
-			if (applicationDto == null)
-				throw new ApplicationNotFoundException(appName);
-			this.applicationDto = applicationDto;
+		public ApplicationImpl(RavelloApplication ravelloApplication) {
+			this.ravelloApplication = ravelloApplication;
 		}
 
 		@Override
 		public String getName() {
-			return applicationDto.getApplicationProperties().getName();
+			return ravelloApplication.getName();
 		}
 
 		@Override
 		public long getId() {
-			return applicationDto.getApplicationProperties().getId();
+			return ravelloApplication.getId();
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer)
-				throws ApplicationWrongStateException {
-			List<VmDto> vms = applicationDto.getVms();
-			Map<String, String> map = new HashMap<String, String>();
-			for (VmDto vmDto : vms) {
-				VmPropertiesDto vmProperties = vmDto.getVmProperties();
-				VmRuntimeInformation runtimeInformation = vmProperties
-						.getRuntimeInformation();
+		public Map<String, String> getVMsDNS() throws ApplicationWrongStateException {
+			Map<String, String> vmsDNS = RavelloRestService.getVMsDNS(ravelloApplication);
+			if (vmsDNS == null)
+				throw new ApplicationWrongStateException(String.format(
+						"Can't find runtime info of %s application. Is started?", getName()));
+			return vmsDNS;
+		}
 
-				if (runtimeInformation == null) {
-					throw new ApplicationWrongStateException(
-							String.format(
-									"Can't find runtime info of %s application. Is started?",
-									getName()));
+		@Override
+		public void validateVMsState() throws ApplicationWrongStateException {
+			try {
+				Set<String> errorVMStates = RavelloRestService.getErrorVMStates();
+				Map<String, String> vmsState = RavelloRestService.getVMsState(ravelloApplication);
+				for (String error : errorVMStates) {
+					if (vmsState.containsValue(error))
+						throw new ApplicationWrongStateException(String.format("One of VM application %s got error ",
+								getName(), error));
 				}
-
-				runtimeInformation.getExternalFqdn();
-				map.put(trimmer.trim(vmProperties.getName()),
-						runtimeInformation.getExternalFqdn());
+			} catch (Exception e) {
+				throw new ApplicationWrongStateException(e);
 			}
-			return map;
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(Application.STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
-			List<VmDto> vms = applicationDto.getVms();
-			Set<Boolean> vmsStates = new HashSet<Boolean>();
-			for (VmDto vmDto : vms)
-				vmsStates.add(compareVmState(vmDto, state));
-			return vmsStates;
-		}
+		public Set<Boolean> compareVmsState(Application.STATE state) throws ApplicationWrongStateException {
+			try {
+				Map<String, String> vmsState = RavelloRestService.getVMsState(ravelloApplication);
+				Set<String> keySet = vmsState.keySet();
+				Set<Boolean> vmsStateCompareResults = new HashSet<Boolean>();
 
-		private boolean compareVmState(VmDto vmDto, STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
-			VmPropertiesDto vmProps = vmDto.getVmProperties();
-			VmRuntimeInformation runtimeInformation = vmProps
-					.getRuntimeInformation();
-			GuestStateDto vmState = runtimeInformation.getState();
-			String name = vmProps.getName();
+				for (String vmName : keySet)
+					vmsStateCompareResults.add(vmsState.get(vmName).trim().equalsIgnoreCase(state.name().trim()));
 
-			switch (vmState) {
-			case ERROR:
-				throw new ApplicationPublishException(String.format(
-						"VM %s ERROR!", name));
-			case STOPPED:
-				throw new ApplicationWrongStateException(String.format(
-						"VM %s STOPED!", name));
-			case TERMINATED:
-				throw new ApplicationWrongStateException(String.format(
-						"VM %s TERMINATED!", name));
-			default:
-				return vmState.name().equals(state.name());
+				return vmsStateCompareResults;
+			} catch (Exception e) {
+				throw new ApplicationWrongStateException(e);
 			}
-
 		}
 
 	}

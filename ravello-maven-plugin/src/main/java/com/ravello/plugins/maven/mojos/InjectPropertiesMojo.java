@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -42,9 +41,8 @@ import com.ravello.plugins.common.PluginIOService;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.exceptions.ApplicationPropertiesNotFoundException;
 import com.ravello.plugins.maven.inject.ArtifactFinder;
+import com.ravello.plugins.maven.inject.InjectorHelper;
 import com.ravello.plugins.maven.inject.PluginArtifactFinder;
-import com.ravello.plugins.maven.inject.MavenHelper;
-import com.ravello.plugins.maven.inject.RavelloPluginHelper;
 
 @Mojo(name = "inject-properties", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class InjectPropertiesMojo extends RavelloMojo {
@@ -79,11 +77,11 @@ public class InjectPropertiesMojo extends RavelloMojo {
 			getLog().info("inject-properties execution goal skipped");
 			return;
 		}
-		
+
 		getLog().info("do inject-properties execution goal");
 
 		try {
-			MavenHelper mavenHelper = new RavelloPluginHelper(project, reactorProjects);
+			InjectorHelper mavenHelper = new InjectorHelper(project, reactorProjects);
 			ArtifactFinder mvnArtifactResolver = new PluginArtifactFinder(pluginDescriptor, resolver,
 					remoteRepositories, localRepository);
 			File propertiesZip = mvnArtifactResolver.artifactToFile(ARTIFACT_ID_PEFIX);

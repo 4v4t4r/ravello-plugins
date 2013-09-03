@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -36,20 +35,17 @@ import org.apache.maven.project.MavenProject;
 
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 
-public class RavelloPluginHelper implements MavenHelper {
+public class InjectorHelper {
 
 	private List<MavenProject> reactorProjects;
 	private MavenProject project;
 
-	public RavelloPluginHelper(MavenProject project,
-			List<MavenProject> reactorProjects) {
+	public InjectorHelper(MavenProject project, List<MavenProject> reactorProjects) {
 		this.project = project;
 		this.reactorProjects = reactorProjects;
 	}
 
-	@Override
-	public Map<String, String> preparePropertiesMap(
-			Map<String, String> propertiesMap, Map<String, String> dnsProperties)
+	public Map<String, String> preparePropertiesMap(Map<String, String> propertiesMap, Map<String, String> dnsProperties)
 			throws ApplicationPropertiesException {
 
 		if (isEmpty(propertiesMap)) {
@@ -70,23 +66,20 @@ public class RavelloPluginHelper implements MavenHelper {
 		return maps;
 	}
 
-	private List<String> findDNSNames(String dnsNames)
-			throws ApplicationPropertiesException {
+	private List<String> findDNSNames(String dnsNames) throws ApplicationPropertiesException {
 		if (isEmpty(dnsNames))
-			throw new ApplicationPropertiesException(
-					"DNS mapping name cannot be empty");
+			throw new ApplicationPropertiesException("DNS mapping name cannot be empty");
 		return Arrays.asList(dnsNames.split(";"));
 	}
 
-	private String findDNSValue(Map<String, String> dnsProperties,
-			String dnsName) throws ApplicationPropertiesException {
+	private String findDNSValue(Map<String, String> dnsProperties, String dnsName)
+			throws ApplicationPropertiesException {
 		if (!dnsProperties.containsKey(dnsName))
-			throw new ApplicationPropertiesException(String.format(
-					"DNS name %s not found in application DNS file", dnsName));
+			throw new ApplicationPropertiesException(String.format("DNS name %s not found in application DNS file",
+					dnsName));
 		return dnsProperties.get(dnsName);
 	}
 
-	@Override
 	public void updateProperties(Map<String, String> propertiesMap) {
 		Set<String> keys = propertiesMap.keySet();
 		for (String key : keys) {
@@ -94,7 +87,6 @@ public class RavelloPluginHelper implements MavenHelper {
 		}
 	}
 
-	@Override
 	public List<PluginHelper> findAllPlugins() {
 		List<PluginHelper> mvnPlugins = new ArrayList<PluginHelper>();
 		for (MavenProject mavenProject : reactorProjects) {
@@ -106,17 +98,14 @@ public class RavelloPluginHelper implements MavenHelper {
 		return mvnPlugins;
 	}
 
-	@Override
 	public void updatePluginsConfiguration(Map<String, String> propertiesMap) {
 		for (PluginHelper mvnPlugin : findAllPlugins()) {
-			PluginConfigurationHelper configuration = mvnPlugin
-					.getConfiguration();
+			PluginConfigurationHelper configuration = mvnPlugin.getConfiguration();
 			doUpdate(propertiesMap, configuration);
 		}
 	}
 
-	private void doUpdate(Map<String, String> propertiesMap,
-			PluginConfigurationHelper configuration) {
+	private void doUpdate(Map<String, String> propertiesMap, PluginConfigurationHelper configuration) {
 		Set<String> keySet = propertiesMap.keySet();
 		for (String key : keySet) {
 			String value = propertiesMap.get(key);

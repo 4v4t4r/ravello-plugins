@@ -1,18 +1,17 @@
 /*
- *
- *	Copyright (c) 2013 Ravello Systems Ltd.
- *  Licensed under the Apache License, Version 2.0 (the "License");
- * 	you may not use this file except in compliance with the License.
- * 	You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * 	Unless required by applicable law or agreed to in writing, software
- * 	distributed under the License is distributed on an "AS IS" BASIS,
- * 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 	See the License for the specific language governing permissions and
- * 	limitations under the License.
  * 
+ * Copyright (c) 2013 Ravello Systems Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -22,25 +21,15 @@
 
 package com.ravello.plugins.common;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static com.ravello.plugins.common.Utils.safeIterNext;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hamcrest.Matchers;
-
 import com.ravello.auto.mgmt.rest.BlueprintsClient;
-import com.ravello.auto.rest.client.common.types.RestResponse;
-import com.ravello.management.common.dtos.application.ApplicationDto;
-import com.ravello.management.common.dtos.application.ApplicationPropertiesDto;
-import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
+import com.ravello.restapi.RavelloApplication;
+import com.ravello.restapi.RavelloRestService;
 
 public class PluginBlueprintsRestService implements BlueprintsRestService {
 
@@ -51,64 +40,49 @@ public class PluginBlueprintsRestService implements BlueprintsRestService {
 	}
 
 	@Override
-	public Application findBlueprint(String blueprintName)
-			throws BlueprintNotFoundException {
-		RestResponse<List<ApplicationPropertiesDto>> response = client
-				.getAllVisibleBlueprints();
-		List<ApplicationPropertiesDto> propertiesList = response.getDto();
-		final ApplicationPropertiesDto propertiesDto = safeIterNext(select(
-				propertiesList,
-				having(on(ApplicationPropertiesDto.class).getName(),
-						Matchers.equalTo(blueprintName.trim()))));
-		return new Blueprint(blueprintName, propertiesDto);
-
+	public Application findBlueprint(String blueprintName) throws BlueprintNotFoundException {
+		RavelloApplication ravelloApplication = RavelloRestService.findBlueprint(client, blueprintName);
+		if (ravelloApplication == null)
+			throw new BlueprintNotFoundException(blueprintName + " Blueprint not found.");
+		return new Blueprint(ravelloApplication);
 	}
 
 	@Override
-	public Application createApplication(long blueprintId, final String appName) {
-		RestResponse<ApplicationDto> response = client
-				.createAppInstanceFromBlueprint(blueprintId, appName);
-		ApplicationDto applicationDto = response.getDto();
-		ApplicationPropertiesDto propertiesDto = applicationDto
-				.getApplicationProperties();
-		return new Blueprint(propertiesDto);
+	public Application createApplication(long blueprintId, String appName) {
+		RavelloApplication ravelloApplication = RavelloRestService.createApplication(client, blueprintId, appName);
+		return new Blueprint(ravelloApplication);
 	}
 
 	final class Blueprint implements Application {
 
-		private ApplicationPropertiesDto propertiesDto;
+		private RavelloApplication ravelloApplication;
 
-		public Blueprint(String blueprintName,
-				ApplicationPropertiesDto propertiesDto)
-				throws BlueprintNotFoundException {
-			if (propertiesDto == null)
-				throw new BlueprintNotFoundException(blueprintName);
-			this.propertiesDto = propertiesDto;
-		}
-
-		public Blueprint(ApplicationPropertiesDto propertiesDto) {
-			this.propertiesDto = propertiesDto;
+		public Blueprint(RavelloApplication ravelloApplication) {
+			this.ravelloApplication = ravelloApplication;
 		}
 
 		@Override
 		public String getName() {
-			return propertiesDto.getName();
+			return ravelloApplication.getName();
 		}
 
 		@Override
 		public long getId() {
-			return propertiesDto.getId();
+			return ravelloApplication.getId();
 		}
 
 		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
+		public Map<String, String> getVMsDNS() {
 			return null;
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
+		public void validateVMsState() throws ApplicationWrongStateException {
+
+		}
+
+		@Override
+		public Set<Boolean> compareVmsState(STATE state) throws ApplicationWrongStateException {
 			return new HashSet<Boolean>();
 		}
 

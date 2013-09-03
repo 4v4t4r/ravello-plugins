@@ -18,9 +18,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.Assert;
 
-import com.ravello.plugins.common.Application.DNSNameTrimmer;
 import com.ravello.plugins.exceptions.ApplicationCreateException;
-import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
 import com.ravello.plugins.exceptions.RavelloPluginException;
@@ -48,10 +46,6 @@ public class BlueprintServiceImplTest {
 	}
 
 	private static final class ApplicationImpl implements Application {
-		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
-			return null;
-		}
 
 		@Override
 		public String getName() {
@@ -64,18 +58,23 @@ public class BlueprintServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
+		public Set<Boolean> compareVmsState(STATE state) throws ApplicationWrongStateException {
 			return null;
+		}
+
+		@Override
+		public Map<String, String> getVMsDNS() throws ApplicationWrongStateException {
+			return null;
+		}
+
+		@Override
+		public void validateVMsState() throws ApplicationWrongStateException {
+			// TODO Auto-generated method stub
+
 		}
 	};
 
 	private static final class Blueprint implements Application {
-		@Override
-		public Map<String, String> getVmsDNS(DNSNameTrimmer trimmer) {
-			return null;
-		}
 
 		@Override
 		public String getName() {
@@ -88,10 +87,19 @@ public class BlueprintServiceImplTest {
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(STATE state)
-				throws ApplicationPublishException,
-				ApplicationWrongStateException {
+		public Set<Boolean> compareVmsState(STATE state) throws ApplicationWrongStateException {
 			return null;
+		}
+
+		@Override
+		public Map<String, String> getVMsDNS() throws ApplicationWrongStateException {
+			return null;
+		}
+
+		@Override
+		public void validateVMsState() throws ApplicationWrongStateException {
+			// TODO Auto-generated method stub
+
 		}
 	};
 
@@ -100,12 +108,9 @@ public class BlueprintServiceImplTest {
 
 		try {
 			when(restService.findBlueprint(bp.getName())).thenReturn(bp);
-			doReturn(app).when(serviceSpy).createApplication(bp.getId(),
-					app.getName());
-			Application createdApp = serviceSpy.createApplication(bp.getName(),
-					app.getName());
-			Assert.notNull(createdApp,
-					"Failed to create app using blueprint name");
+			doReturn(app).when(serviceSpy).createApplication(bp.getId(), app.getName());
+			Application createdApp = serviceSpy.createApplication(bp.getName(), app.getName());
+			Assert.notNull(createdApp, "Failed to create app using blueprint name");
 		} catch (RavelloPluginException e) {
 			fail(e.getMessage());
 		}
@@ -114,12 +119,9 @@ public class BlueprintServiceImplTest {
 	@Test
 	public void testCreateApplicationUsingBlueprintId() {
 		try {
-			when(restService.createApplication(bp.getId(), app.getName()))
-					.thenReturn(app);
-			Assert.notNull(serviceSpy.createApplication(bp.getId(),
-					app.getName()));
-			verify(restService, times(1)).createApplication(bp.getId(),
-					app.getName());
+			when(restService.createApplication(bp.getId(), app.getName())).thenReturn(app);
+			Assert.notNull(serviceSpy.createApplication(bp.getId(), app.getName()));
+			verify(restService, times(1)).createApplication(bp.getId(), app.getName());
 		} catch (ApplicationCreateException e) {
 			fail(e.getMessage());
 		}
