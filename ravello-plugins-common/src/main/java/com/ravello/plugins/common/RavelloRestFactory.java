@@ -21,9 +21,10 @@
 
 package com.ravello.plugins.common;
 
-import com.ravello.auto.mgmt.rest.BlueprintsClient;
+import com.ravello.plugins.exceptions.RavelloLoginException;
 import com.ravello.restapi.RavelloApplicationClient;
 import com.ravello.restapi.RavelloRestClient;
+import com.ravellosystems.rest.client.BlueprintsClient;
 
 public final class RavelloRestFactory {
 
@@ -32,22 +33,31 @@ public final class RavelloRestFactory {
 	private RavelloRestFactory() {
 	}
 
-	public static final RavelloRestFactory get(Credentials credentials) {
+	public static final RavelloRestFactory get(Credentials credentials)
+			throws RavelloLoginException {
 		restClient = getRestClient(credentials);
 		return new RavelloRestFactory();
 	}
 
-	private static RavelloRestClient getRestClient(Credentials credentials) {
+	private static RavelloRestClient getRestClient(Credentials credentials)
+			throws RavelloLoginException {
 		if (restClient == null) {
-			restClient = new RavelloRestClient(credentials.getUrl());
-			restClient.login(credentials.getUser(), credentials.getPassword());
+			try {
+				restClient = new RavelloRestClient(credentials.getUrl());
+				restClient.login(credentials.getUser(),
+						credentials.getPassword());
+			} catch (Throwable e) {
+				throw new RavelloLoginException(e);
+			}
 		}
 		return restClient;
 	}
 
 	public final ApplicationService application() {
-		RavelloApplicationClient client = new RavelloApplicationClient(restClient);
-		ApplicationRestService restService = new PluginApplicationRestService(client);
+		RavelloApplicationClient client = new RavelloApplicationClient(
+				restClient);
+		ApplicationRestService restService = new PluginApplicationRestService(
+				client);
 		ApplicationService service = new PluginApplicationService();
 		service.setRestClient(restService);
 		return service;
@@ -55,7 +65,8 @@ public final class RavelloRestFactory {
 
 	public final BlueprintService blueprint() {
 		BlueprintsClient client = new BlueprintsClient(restClient);
-		BlueprintsRestService restService = new PluginBlueprintsRestService(client);
+		BlueprintsRestService restService = new PluginBlueprintsRestService(
+				client);
 		BlueprintService service = new PluginBlueprintService();
 		service.setRestClient(restService);
 		return service;

@@ -25,7 +25,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.ravello.plugins.exceptions.ApplicationDeleteException;
 import com.ravello.plugins.exceptions.ApplicationNotFoundException;
+import com.ravello.plugins.exceptions.ApplicationStartException;
+import com.ravello.plugins.exceptions.ApplicationStopException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.restapi.RavelloApplication;
 import com.ravello.restapi.RavelloApplicationClient;
@@ -40,18 +43,30 @@ public class PluginApplicationRestService implements ApplicationRestService {
 	}
 
 	@Override
-	public void delete(long appId) {
-		RavelloRestService.deleteApplication(client, appId);
+	public void delete(long appId) throws ApplicationDeleteException {
+		try {
+			RavelloRestService.deleteApplication(client, appId);
+		} catch (Throwable e) {
+			throw new ApplicationDeleteException(e);
+		}
 	}
 
 	@Override
-	public void start(long appId, int autoStop) {
-		RavelloRestService.startApplication(client, appId, autoStop);
+	public void start(long appId, int autoStop) throws ApplicationStartException {
+		try {
+			RavelloRestService.startApplication(client, appId, autoStop);
+		} catch (Throwable e) {
+			throw new ApplicationStartException(e);
+		}
 	}
 
 	@Override
-	public void stop(long appId) {
-		RavelloRestService.stopApplication(client, appId);
+	public void stop(long appId) throws ApplicationStopException {
+		try {
+			RavelloRestService.stopApplication(client, appId);
+		} catch (Throwable e) {
+			throw new ApplicationStopException(e);
+		}
 	}
 
 	@Override

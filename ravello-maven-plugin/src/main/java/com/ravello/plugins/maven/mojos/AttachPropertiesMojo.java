@@ -37,9 +37,9 @@ import com.ravello.plugins.exceptions.RavelloPluginException;
 public class AttachPropertiesMojo extends ApplicationMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		RavelloRestFactory ravelloBuilder = RavelloRestFactory
-				.get(new CredentialsImpl());
 		try {
+			RavelloRestFactory ravelloBuilder = RavelloRestFactory
+					.get(new CredentialsImpl());
 			Application application = ravelloBuilder.application()
 					.findApplication(applicationName);
 			File zip = createZip(application);

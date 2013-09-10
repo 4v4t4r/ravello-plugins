@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ravello.plugins</groupId>
 		<artifactId>ravello-plugins</artifactId>
-		<version>0.1.BETA</version>
+		<version>0.1.BETA-SNAPSHOT</version>
 	</parent>
 	<packaging>maven-plugin</packaging>
 	<artifactId>ravello-maven-plugin</artifactId>
@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.ravello.plugins</groupId>
 			<artifactId>ravello-plugins-common</artifactId>
-			<version>0.1.BETA</version>
+			<version>0.1.BETA-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>

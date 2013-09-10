@@ -29,22 +29,14 @@ import com.ravello.plugins.common.Application;
 import com.ravello.plugins.common.ApplicationService;
 import com.ravello.plugins.common.Credentials;
 import com.ravello.plugins.common.IOService;
-import com.ravello.plugins.common.IOService.PropertyKeyTrimmer;
 import com.ravello.plugins.common.PluginIOService;
 import com.ravello.plugins.common.Utils;
+import com.ravello.plugins.common.IOService.PropertyKeyTrimmer;
 import com.ravello.plugins.exceptions.ApplicationPropertiesException;
 import com.ravello.plugins.exceptions.ApplicationPublishException;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 
 public abstract class ApplicationMojo extends RavelloMojo {
-
-	protected final static String serviceUrl = "https://cloud.ravellosystems.com/services";
-
-	@Parameter(property = "userName", required = true)
-	protected String userName;
-
-	@Parameter(property = "password", required = true)
-	protected String password;
 
 	@Parameter(property = "applicationName", required = true)
 	protected String applicationName;

@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.ravello.auto.mgmt.rest.BlueprintsClient;
 import com.ravello.plugins.exceptions.ApplicationWrongStateException;
 import com.ravello.plugins.exceptions.BlueprintNotFoundException;
 import com.ravello.restapi.RavelloApplication;
 import com.ravello.restapi.RavelloRestService;
+import com.ravellosystems.rest.client.BlueprintsClient;
 
 public class PluginBlueprintsRestService implements BlueprintsRestService {
 

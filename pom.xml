@@ -5,7 +5,7 @@
 	<artifactId>ravello-plugins</artifactId>
 	<packaging>pom</packaging>
 	<name>ravello-plugins</name>
-	<version>0.1.BETA</version>
+	<version>0.1.BETA-SNAPSHOT</version>
 
 	<modules>
 		<module>ravello-maven-plugin</module>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>com.ravello.restapi</groupId>
 			<artifactId>ravello-restapi</artifactId>
-			<version>0.1.BETA</version>
+			<version>0.1.BETA-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.lambdaj</groupId>
@@ -41,16 +41,19 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
 			<version>1.17.1</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-json</artifactId>
 			<version>1.17.1</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-bundle</artifactId>
 			<version>1.17.1</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
