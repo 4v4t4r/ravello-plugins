@@ -19,7 +19,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.inject;
+package com.ravellosystems.plugins.maven.inject;
 
 import java.io.File;
 

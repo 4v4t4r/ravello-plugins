@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.mojos;
+package com.ravellosystems.plugins.maven.mojos;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -32,20 +32,15 @@ import com.ravellosystems.plugins.common.ApplicationService;
 import com.ravellosystems.plugins.common.RavelloRestFactory;
 import com.ravellosystems.plugins.exceptions.RavelloPluginException;
 
-@Mojo(name = "app-start-wait", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, aggregator = true)
-public class StartWaitMojo extends ApplicationMojo {
+@Mojo(name = "app-delete", defaultPhase = LifecyclePhase.POST_SITE, threadSafe = true, aggregator = true)
+public class DeleteMojo extends ApplicationMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			getLog().info("ravello: login");
 			ApplicationService service = RavelloRestFactory.get(
 					new CredentialsImpl()).application();
 			Application application = service.findApplication(applicationName);
-			getLog().info("ravello: start");
-			service.start(application.getId(), autoStop);
-			getLog().info("ravello: await");
-			service.awaitForApplicationState(application.getId(), timeout,
-					Application.STATE.STARTED);
+			service.delete(application.getId());
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (Exception e) {

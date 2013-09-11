@@ -19,7 +19,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.mojos;
+package com.ravellosystems.plugins.maven.mojos;
 
 import java.io.File;
 

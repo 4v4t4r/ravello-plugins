@@ -20,7 +20,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.inject;
+package com.ravellosystems.plugins.maven.inject;
 
 import java.util.Arrays;
 import java.util.List;

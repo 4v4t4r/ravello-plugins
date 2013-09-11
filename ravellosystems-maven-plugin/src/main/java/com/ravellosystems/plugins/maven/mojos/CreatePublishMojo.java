@@ -20,31 +20,48 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.mojos;
+package com.ravellosystems.plugins.maven.mojos;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import com.ravellosystems.plugins.common.Application;
 import com.ravellosystems.plugins.common.ApplicationService;
+import com.ravellosystems.plugins.common.BlueprintService;
 import com.ravellosystems.plugins.common.RavelloRestFactory;
 import com.ravellosystems.plugins.exceptions.RavelloPluginException;
 
-@Mojo(name = "app-stop", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, aggregator = true)
-public class StopMojo extends ApplicationMojo {
+@Mojo(name = "app-create-publish", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true, aggregator = true)
+public class CreatePublishMojo extends ApplicationMojo {
+
+	@Parameter(property = "blueprintName", required = true)
+	protected String blueprintName;
+
+	protected RavelloRestFactory ravelloBuilder;
+	protected BlueprintService blueprintService;
+	protected ApplicationService applicationService;
+	protected Application application;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			ApplicationService service = RavelloRestFactory.get(
-					new CredentialsImpl()).application();
-			Application application = service.findApplication(applicationName);
-			service.stop(application.getId());
+			getLog().info("ravello: login");
+			ravelloBuilder = RavelloRestFactory.get(new CredentialsImpl());
+			blueprintService = ravelloBuilder.blueprint();
+			getLog().info("ravello: create app");
+			application = blueprintService.createApplication(blueprintName,
+					applicationName);
+			applicationService = ravelloBuilder.application();
+			getLog().info("ravello: publish app");
+			Publisher publisher = getPublisher();
+			publisher.doPublish(application, applicationService);
 		} catch (RavelloPluginException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
+
 }

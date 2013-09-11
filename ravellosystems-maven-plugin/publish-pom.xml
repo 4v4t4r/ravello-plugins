@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ravello.plugins</groupId>
+	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
 	<version>0.1.BETA</version>
 	<packaging>maven-plugin</packaging>
-	<description>RavelloSystems Maven Plugin</description>
+	<description>RavelloSystems API integretion Maven plugin</description>
 	<name>ravellosystems-maven-plugin</name>
 
 	<!-- <parent> <groupId>org.sonatype.oss</groupId> <artifactId>oss-parent</artifactId> 

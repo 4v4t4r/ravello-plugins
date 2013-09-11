@@ -19,7 +19,7 @@
  * @author Alex Nickolaevsky
  * */
 
-package com.ravello.plugins.maven.mojos;
+package com.ravellosystems.plugins.maven.mojos;
 
 import java.io.File;
 import java.util.List;
@@ -36,13 +36,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import com.ravello.plugins.maven.inject.ArtifactFinder;
-import com.ravello.plugins.maven.inject.InjectorHelper;
-import com.ravello.plugins.maven.inject.PluginArtifactFinder;
 import com.ravellosystems.plugins.common.IOService;
 import com.ravellosystems.plugins.common.PluginIOService;
 import com.ravellosystems.plugins.exceptions.ApplicationPropertiesException;
 import com.ravellosystems.plugins.exceptions.ApplicationPropertiesNotFoundException;
+import com.ravellosystems.plugins.maven.inject.ArtifactFinder;
+import com.ravellosystems.plugins.maven.inject.InjectorHelper;
+import com.ravellosystems.plugins.maven.inject.PluginArtifactFinder;
 
 @Mojo(name = "inject-properties", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true)
 public class InjectPropertiesMojo extends RavelloMojo {
