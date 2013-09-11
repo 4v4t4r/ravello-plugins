@@ -3,13 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
-	<version>0.1.BETA</version>
+	<version>0.1.BETA-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<description>RavelloSystems API integretion Maven plugin</description>
 	<name>ravellosystems-maven-plugin</name>
 
-	<!-- <parent> <groupId>org.sonatype.oss</groupId> <artifactId>oss-parent</artifactId> 
-		<version>7</version> </parent> -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<licenses>
 		<license>
@@ -202,9 +205,19 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
-				<executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> <goals> 
-				<goal>sign</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -238,8 +251,16 @@
 		</pluginManagement>
 	</build>
 
-	<!-- <distributionManagement> <repository> <id>nexus-releases</id> <name>Nexus 
-		Release Repository</name> <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url> 
-		</repository> </distributionManagement> -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 </project>
