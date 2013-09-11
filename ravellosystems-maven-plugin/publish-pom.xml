@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
-	<version>0.1.BETA-SNAPSHOT</version>
+	<version>0.1.BETA</version>
 	<packaging>maven-plugin</packaging>
 	<description>RavelloSystems API integretion Maven plugin</description>
 	<name>ravellosystems-maven-plugin</name>
@@ -38,12 +37,12 @@
 		<developer>
 			<id>ravellosystems</id>
 			<name>ravellosystems</name>
-			<email></email>
-			<url></url>
+			<email />
+			<url />
 			<organization>RavelloSystems</organization>
 			<organizationUrl>http://ravellosystems.com</organizationUrl>
 			<roles>
-				<role></role>
+				<role />
 			</roles>
 			<timezone>2</timezone>
 		</developer>
@@ -62,7 +61,7 @@
 		<dependency>
 			<groupId>com.ravellosystems.api</groupId>
 			<artifactId>ravellosystems-api</artifactId>
-			<version>0.1.BETA-SNAPSHOT</version>
+			<version>0.1.BETA</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.lambdaj</groupId>
@@ -174,8 +173,7 @@
 								</includes>
 							</artifactSet>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
 							</transformers>
 						</configuration>
 					</execution>
@@ -240,7 +238,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
