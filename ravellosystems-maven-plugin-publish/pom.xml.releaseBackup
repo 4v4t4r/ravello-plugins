@@ -1,8 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
-	<version>0.1.BETA-SNAPSHOT</version>
+	<version>0.3.BETA-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<description>RavelloSystems API integretion Maven plugin</description>
 	<name>ravellosystems-maven-plugin</name>
@@ -134,6 +135,7 @@
 						<configuration>
 							<sources>
 								<source>../ravellosystems-plugins-common/src/main/java</source>
+								<source>../ravellosystems-maven-plugin/src/main/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -173,7 +175,8 @@
 								</includes>
 							</artifactSet>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
 							</transformers>
 						</configuration>
 					</execution>
@@ -239,6 +242,19 @@
 									</pluginExecutionFilter>
 									<action>
 										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>build-helper-maven-plugin</artifactId>
+										<versionRange>[1.7,)</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
