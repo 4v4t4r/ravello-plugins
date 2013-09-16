@@ -1,8 +1,0 @@
-target
-target/**
-.settings
-.settings/**
-.classpath
-.project
-
-##svn propset svn:ignore -RF .svn-ignore .
