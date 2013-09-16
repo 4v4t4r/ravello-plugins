@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ravello.maven.demo</groupId>
+		<artifactId>ravello-maven-demo</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<groupId>com.ravello.maven.demo.application</groupId>
+	<artifactId>ravello-app-maven-demo-application</artifactId>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.ravello.plugins</groupId>
+				<artifactId>ravello-maven-plugin</artifactId>
+				<version>0.1.BETA-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>${goal}</goal>
+						</goals>
+
+						<configuration>
+							<serviceUrl>http://babushka-35389881.srv.ravcloud.com:8080/services/login</serviceUrl>
+							<userName>auto.317e42ab429a442f981dd35ad17aedba.mail@gmail.com</userName>
+							<password>9o5KN8</password>
+							<blueprintName>ravello-maven-demo-bp</blueprintName>
+							<applicationName>ravello-maven-demo</applicationName>
+							<!-- <preferredCloud>AMAZON</preferredCloud> <preferredZone>Virginia</preferredZone> 
+								<publishCostOptimized>false</publishCostOptimized> <publishPerformanceOptimized>false</publishPerformanceOptimized> -->
+							<finalName>app-properties</finalName>
+							<classifier>${app-classifier}</classifier>
+							<autoStop>5000</autoStop>
+							<timeout>25</timeout>
+							<delay>1</delay>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

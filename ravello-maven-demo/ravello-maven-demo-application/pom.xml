@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ravello.maven.demo</groupId>
+		<artifactId>ravello-maven-demo</artifactId>
+		<version>1.0</version>
+	</parent>
+	<groupId>com.ravello.maven.demo.application</groupId>
+	<artifactId>ravello-app-maven-demo-application</artifactId>
+	<packaging>pom</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.ravellosystems.plugins</groupId>
+				<artifactId>ravellosystems-maven-plugin</artifactId>
+				<version>0.0.1-BETA</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>${goal}</goal>
+						</goals>
+						<configuration>
+							<userName>user</userName>
+							<password>pass</password>
+							<blueprintName>ravello-maven-demo-bp</blueprintName>
+							<applicationName>ravello-maven-demo</applicationName>
+							<!-- <preferredCloud>AMAZON</preferredCloud> <preferredZone>Virginia</preferredZone> 
+								<publishCostOptimized>false</publishCostOptimized> <publishPerformanceOptimized>false</publishPerformanceOptimized> -->
+							<finalName>app-properties</finalName>
+							<classifier>${app-classifier}</classifier>
+							<autoStop>5000</autoStop>
+							<timeout>25</timeout>
+							<delay>1</delay>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
