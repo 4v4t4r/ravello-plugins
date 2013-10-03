@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ravellosystems.plugins</groupId>
 		<artifactId>ravellosystems-plugins</artifactId>
-		<version>0.1.BETA</version>
+		<version>0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>ravellosystems-jenkins-plugin</artifactId>
 	<packaging>jar</packaging>

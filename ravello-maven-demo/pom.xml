@@ -8,7 +8,6 @@
 	<modules>
 		<module>ravello-maven-demo-webapp</module>
 		<module>ravello-maven-demo-application</module>
-		<module>ravello-maven-demo-deploy</module>
 	</modules>
 
 	<build>

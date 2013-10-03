@@ -38,6 +38,12 @@ import com.ravellosystems.plugins.exceptions.ApplicationWrongStateException;
 
 public abstract class ApplicationMojo extends RavelloMojo {
 
+	@Parameter(property = "userName", required = true)
+	protected String userName;
+
+	@Parameter(property = "password", required = true)
+	protected String password;
+
 	@Parameter(property = "applicationName", required = true)
 	protected String applicationName;
 

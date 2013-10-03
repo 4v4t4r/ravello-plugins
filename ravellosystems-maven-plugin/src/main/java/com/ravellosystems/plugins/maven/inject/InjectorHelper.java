@@ -100,11 +100,11 @@ public class InjectorHelper {
 	public void updatePluginsConfiguration(Map<String, String> propertiesMap) {
 		for (PluginHelper mvnPlugin : findAllPlugins()) {
 			PluginConfigurationHelper configuration = mvnPlugin.getConfiguration();
-			doUpdate(propertiesMap, configuration);
+			doUpdatePluginsConfiguration(propertiesMap, configuration);
 		}
 	}
 
-	private void doUpdate(Map<String, String> propertiesMap, PluginConfigurationHelper configuration) {
+	private void doUpdatePluginsConfiguration(Map<String, String> propertiesMap, PluginConfigurationHelper configuration) {
 		Set<String> keySet = propertiesMap.keySet();
 		for (String key : keySet) {
 			String value = propertiesMap.get(key);

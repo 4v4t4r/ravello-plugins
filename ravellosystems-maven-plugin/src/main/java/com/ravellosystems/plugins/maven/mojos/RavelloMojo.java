@@ -29,12 +29,6 @@ import org.apache.maven.project.MavenProjectHelper;
 
 public abstract class RavelloMojo extends AbstractMojo {
 
-	@Parameter(property = "userName", required = true)
-	protected String userName;
-
-	@Parameter(property = "password", required = true)
-	protected String password;
-
 	@Component
 	protected MavenProject project;
 

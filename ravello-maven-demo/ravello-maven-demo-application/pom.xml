@@ -9,13 +9,13 @@
 	<groupId>com.ravello.maven.demo.application</groupId>
 	<artifactId>ravello-app-maven-demo-application</artifactId>
 	<packaging>pom</packaging>
-
+	
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.ravellosystems.plugins</groupId>
 				<artifactId>ravellosystems-maven-plugin</artifactId>
-				<version>0.0.1-BETA</version>
+				<version>0.1-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>package</phase>

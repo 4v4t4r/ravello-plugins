@@ -120,7 +120,7 @@
 			<plugin>
 				<groupId>com.ravellosystems.plugins</groupId>
 				<artifactId>ravellosystems-maven-plugin</artifactId>
-				<version>0.0.1-BETA</version>
+				<version>0.1-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -206,7 +206,7 @@
 									<pluginExecutionFilter>
 										<groupId>com.ravellosystems.plugins</groupId>
 										<artifactId>ravellosystems-maven-plugin</artifactId>
-										<versionRange>0.1.BETA,)</versionRange>
+										<versionRange>0.1-SNAPSHOT,)</versionRange>
 										<goals>
 											<goal>inject-properties</goal>
 										</goals>
