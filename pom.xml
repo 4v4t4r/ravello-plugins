@@ -94,24 +94,11 @@
 
 	<repositories>
 		<repository>
-			<id>management-svn</id>
-			<name>management-svn-releases</name>
-			<url>http://10.0.2.67:8081/artifactory/libs-snapshot-local</url>
+			<id>maven-repo-ravello-mvn-repo</id>
+			<name>ravello-github-releases</name>
+			<url>https://raw.github.com/ravello/maven-repo/ravello-mvn-repo/maven/releases/</url>
 		</repository>
 	</repositories>
-
-	<distributionManagement>
-		<repository>
-			<id>management-svn</id>
-			<name>management-svn-releases</name>
-			<url>http://10.0.2.67:8081/artifactory/plugins-release-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>management-svn</id>
-			<name>management-svn-releases</name>
-			<url>http://10.0.2.67:8081/artifactory/plugins-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<build>
 		<plugins>
