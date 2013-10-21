@@ -32,6 +32,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 
 import com.ravellosystems.plugins.exceptions.ApplicationPropertiesException;
+
 import static com.ravellosystems.plugins.common.Utils.isEmpty;
 
 public class InjectorHelper {
@@ -83,6 +84,7 @@ public class InjectorHelper {
 		Set<String> keys = propertiesMap.keySet();
 		for (String key : keys) {
 			project.getProperties().setProperty(key, propertiesMap.get(key));
+			System.setProperty(key, propertiesMap.get(key));
 		}
 	}
 

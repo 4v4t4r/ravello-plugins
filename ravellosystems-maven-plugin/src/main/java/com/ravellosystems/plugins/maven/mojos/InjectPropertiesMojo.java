@@ -24,6 +24,7 @@ package com.ravellosystems.plugins.maven.mojos;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -78,8 +79,6 @@ public class InjectPropertiesMojo extends RavelloMojo {
 			return;
 		}
 
-		getLog().info("do inject-properties execution goal");
-
 		try {
 			InjectorHelper mavenHelper = new InjectorHelper(project, reactorProjects);
 			ArtifactFinder mvnArtifactResolver = new PluginArtifactFinder(pluginDescriptor, resolver,
@@ -89,6 +88,7 @@ public class InjectPropertiesMojo extends RavelloMojo {
 			ioService.unzipFile(propertiesZip, getTarget());
 			Map<String, String> dnsProperties = ioService.readProperties(new File(getTarget(), propertiesFileName));
 			Map<String, String> dnsNamesPropertiesMap = mavenHelper.preparePropertiesMap(propertiesMap, dnsProperties);
+			printProperties(dnsProperties);
 			mavenHelper.updatePluginsConfiguration(dnsNamesPropertiesMap);
 			mavenHelper.updateProperties(dnsNamesPropertiesMap);
 		} catch (ApplicationPropertiesException e) {
@@ -98,6 +98,16 @@ public class InjectPropertiesMojo extends RavelloMojo {
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+	}
+
+	void printProperties(Map<String, String> properties) {
+		Set<String> keySet = properties.keySet();
+		getLog().info("**************************************************");
+		getLog().info("Ravello Application DNS Properties");
+		getLog().info("**************************************************");
+		for (String key : keySet)
+			getLog().info("* " + key + " = " + properties.get(key));
+		getLog().info("**************************************************");
 	}
 
 }
