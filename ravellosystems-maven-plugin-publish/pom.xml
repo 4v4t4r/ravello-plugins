@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
-	<version>1.2-BETA-SNAPSHOT</version>
+	<version>1.2-BETA</version>
 	<packaging>maven-plugin</packaging>
 	<description>RavelloSystems API integretion Maven plugin</description>
 	<name>ravellosystems-maven-plugin</name>
