@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ravellosystems.plugins</groupId>
 	<artifactId>ravellosystems-maven-plugin</artifactId>
@@ -168,7 +169,8 @@
 								</includes>
 							</artifactSet>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
 							</transformers>
 						</configuration>
 					</execution>
@@ -264,6 +266,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>maven-repo-ravello-mvn-repo</id>
+			<name>ravello-github-releases</name>
+			<url>https://raw.github.com/ravello/maven-repo/ravello-mvn-repo/maven/releases/</url>
+		</repository>
+	</repositories>
 
 	<distributionManagement>
 		<snapshotRepository>
