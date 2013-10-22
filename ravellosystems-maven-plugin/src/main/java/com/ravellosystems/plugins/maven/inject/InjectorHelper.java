@@ -85,6 +85,17 @@ public class InjectorHelper {
 		for (String key : keys) {
 			project.getProperties().setProperty(key, propertiesMap.get(key));
 			System.setProperty(key, propertiesMap.get(key));
+
+			Set<Object> keySet = project.getProperties().keySet();
+			for (Object mpkey : keySet) {
+				String mpValue = String.valueOf(project.getProperties().get(mpkey));
+				String wrappedKey = String.format("${%s}", key);
+				if (mpValue.contains(wrappedKey)) {
+					String replaced = mpValue.replace(wrappedKey, propertiesMap.get(key));
+					project.getProperties().setProperty(String.valueOf(mpkey), replaced);
+					System.setProperty(String.valueOf(mpkey), replaced);
+				}
+			}
 		}
 	}
 
