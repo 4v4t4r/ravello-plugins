@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>com.ravellosystems.api</groupId>
 			<artifactId>ravellosystems-api</artifactId>
-			<version>1.0-BETA</version>
+			<version>1.1-BETA</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.lambdaj</groupId>
