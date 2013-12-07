@@ -90,7 +90,7 @@ public class InjectPropertiesMojo extends RavelloMojo {
 			Map<String, String> dnsNamesPropertiesMap = mavenHelper.preparePropertiesMap(propertiesMap, dnsProperties);
 			printProperties(dnsProperties);
 			mavenHelper.updatePluginsConfiguration(dnsNamesPropertiesMap);
-			mavenHelper.updateProperties(dnsNamesPropertiesMap);
+			mavenHelper.updateProjectProperties(dnsNamesPropertiesMap);
 		} catch (ApplicationPropertiesException e) {
 			throw new MojoFailureException(e.getMessage(), e);
 		} catch (ApplicationPropertiesNotFoundException e) {

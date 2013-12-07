@@ -21,6 +21,8 @@
 
 package com.ravellosystems.plugins.maven.inject;
 
+import static com.ravellosystems.plugins.common.Utils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,19 +35,19 @@ import org.apache.maven.project.MavenProject;
 
 import com.ravellosystems.plugins.exceptions.ApplicationPropertiesException;
 
-import static com.ravellosystems.plugins.common.Utils.isEmpty;
-
 public class InjectorHelper {
 
 	private List<MavenProject> reactorProjects;
 	private MavenProject project;
 
-	public InjectorHelper(MavenProject project, List<MavenProject> reactorProjects) {
+	public InjectorHelper(MavenProject project,
+			List<MavenProject> reactorProjects) {
 		this.project = project;
 		this.reactorProjects = reactorProjects;
 	}
 
-	public Map<String, String> preparePropertiesMap(Map<String, String> propertiesMap, Map<String, String> dnsProperties)
+	public Map<String, String> preparePropertiesMap(
+			Map<String, String> propertiesMap, Map<String, String> dnsProperties)
 			throws ApplicationPropertiesException {
 
 		if (isEmpty(propertiesMap)) {
@@ -66,37 +68,63 @@ public class InjectorHelper {
 		return maps;
 	}
 
-	private List<String> findDNSNames(String dnsNames) throws ApplicationPropertiesException {
+	private List<String> findDNSNames(String dnsNames)
+			throws ApplicationPropertiesException {
 		if (isEmpty(dnsNames))
-			throw new ApplicationPropertiesException("DNS mapping name cannot be empty");
+			throw new ApplicationPropertiesException(
+					"key mapping name cannot be empty");
 		return Arrays.asList(dnsNames.split(";"));
 	}
 
-	private String findDNSValue(Map<String, String> dnsProperties, String dnsName)
-			throws ApplicationPropertiesException {
+	private String findDNSValue(Map<String, String> dnsProperties,
+			String dnsName) throws ApplicationPropertiesException {
 		if (!dnsProperties.containsKey(dnsName))
-			throw new ApplicationPropertiesException(String.format("DNS name %s not found in application DNS file",
+			throw new ApplicationPropertiesException(String.format(
+					"key name %s not found in application properties file",
 					dnsName));
 		return dnsProperties.get(dnsName);
 	}
 
-	public void updateProperties(Map<String, String> propertiesMap) {
-		Set<String> keys = propertiesMap.keySet();
-		for (String key : keys) {
-			project.getProperties().setProperty(key, propertiesMap.get(key));
-			System.setProperty(key, propertiesMap.get(key));
-
-			Set<Object> keySet = project.getProperties().keySet();
-			for (Object mpkey : keySet) {
-				String mpValue = String.valueOf(project.getProperties().get(mpkey));
-				String wrappedKey = String.format("${%s}", key);
-				if (mpValue.contains(wrappedKey)) {
-					String replaced = mpValue.replace(wrappedKey, propertiesMap.get(key));
-					project.getProperties().setProperty(String.valueOf(mpkey), replaced);
-					System.setProperty(String.valueOf(mpkey), replaced);
+	public void updateProjectProperties(Map<String, String> propertiesMap)
+			throws Exception {
+		try {
+			Set<String> keys = propertiesMap.keySet();
+			for (String key : keys) {
+				doUpdate(propertiesMap, key);
+			}
+			for (String key : keys) {
+				Map<String, String> replacedProps = findPropertiesForReplace(
+						propertiesMap, key);
+				Set<String> replacedKeySet = replacedProps.keySet();
+				for (String replacedKey : replacedKeySet) {
+					doUpdate(replacedProps, replacedKey);
 				}
 			}
+		} catch (Exception e) {
+			throw new Exception("Failed to update project properties", e);
 		}
+	}
+
+	private Map<String, String> findPropertiesForReplace(
+			Map<String, String> propertiesMap, String key) {
+		Map<String, String> replacedProps = new HashMap<String, String>();
+		Set<Object> projectPropertiesKeySet = project.getProperties().keySet();
+		for (Object projectPropKey : projectPropertiesKeySet) {
+			String projectPropValue = String.valueOf(project.getProperties()
+					.get(projectPropKey));
+			String wrappedKey = String.format("${%s}", key);
+			if (projectPropValue.contains(wrappedKey)) {
+				String replaced = projectPropValue.replace(wrappedKey,
+						propertiesMap.get(key));
+				replacedProps.put(String.valueOf(projectPropKey), replaced);
+			}
+		}
+		return replacedProps;
+	}
+
+	private void doUpdate(Map<String, String> propertiesMap, String key) {
+		project.getProperties().setProperty(key, propertiesMap.get(key));
+		System.setProperty(key, propertiesMap.get(key));
 	}
 
 	public List<PluginHelper> findAllPlugins() {
@@ -112,12 +140,15 @@ public class InjectorHelper {
 
 	public void updatePluginsConfiguration(Map<String, String> propertiesMap) {
 		for (PluginHelper mvnPlugin : findAllPlugins()) {
-			PluginConfigurationHelper configuration = mvnPlugin.getConfiguration();
+			PluginConfigurationHelper configuration = mvnPlugin
+					.getConfiguration();
 			doUpdatePluginsConfiguration(propertiesMap, configuration);
 		}
 	}
 
-	private void doUpdatePluginsConfiguration(Map<String, String> propertiesMap, PluginConfigurationHelper configuration) {
+	private void doUpdatePluginsConfiguration(
+			Map<String, String> propertiesMap,
+			PluginConfigurationHelper configuration) {
 		Set<String> keySet = propertiesMap.keySet();
 		for (String key : keySet) {
 			String value = propertiesMap.get(key);
