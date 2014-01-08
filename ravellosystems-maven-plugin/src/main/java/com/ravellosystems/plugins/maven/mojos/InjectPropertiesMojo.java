@@ -101,13 +101,7 @@ public class InjectPropertiesMojo extends RavelloMojo {
 	}
 
 	void printProperties(Map<String, String> properties) {
-		Set<String> keySet = properties.keySet();
-		getLog().info("**************************************************");
-		getLog().info("Ravello Application DNS Properties");
-		getLog().info("**************************************************");
-		for (String key : keySet)
-			getLog().info("* " + key + " = " + properties.get(key));
-		getLog().info("**************************************************");
+		getLog().info("DNS: " + properties.toString());
 	}
 
 }
