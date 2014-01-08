@@ -31,4 +31,8 @@ public interface BlueprintsRestService {
 
 	Application createApplication(long blueprintId, String appName);
 
+	Application createBlueprintFromApp(String appName, String blueprintName);
+
+	void deleteBlueprint(long bpId);
+
 }

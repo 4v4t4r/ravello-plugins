@@ -53,6 +53,17 @@ public class PluginBlueprintsRestService implements BlueprintsRestService {
 		return new Blueprint(ravelloApplication);
 	}
 
+	@Override
+	public Application createBlueprintFromApp(String appName, String blueprintName) {
+		RavelloApplication ravelloApplication = RavelloRestService.createBlueprint(client, appName, blueprintName);
+		return new Blueprint(ravelloApplication);
+	}
+
+	@Override
+	public void deleteBlueprint(long bpId) {
+		client.deleteApplicationBlueprint(bpId);
+	}
+
 	final class Blueprint implements Application {
 
 		private RavelloApplication ravelloApplication;
@@ -87,4 +98,5 @@ public class PluginBlueprintsRestService implements BlueprintsRestService {
 		}
 
 	}
+
 }

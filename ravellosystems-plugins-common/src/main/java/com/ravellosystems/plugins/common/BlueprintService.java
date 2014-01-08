@@ -23,6 +23,7 @@
 package com.ravellosystems.plugins.common;
 
 import com.ravellosystems.plugins.exceptions.ApplicationCreateException;
+import com.ravellosystems.plugins.exceptions.ApplicationNotFoundException;
 import com.ravellosystems.plugins.exceptions.BlueprintNotFoundException;
 
 public interface BlueprintService {
@@ -34,5 +35,11 @@ public interface BlueprintService {
 			throws ApplicationCreateException;
 
 	void setRestClient(BlueprintsRestService restService);
+
+	Application createBlueprint(String appName, String blueprintName) throws ApplicationNotFoundException;
+
+	Application findBlueprint(String blueprintName) throws BlueprintNotFoundException;
+
+	void deleteBlueprint(long bpId);
 
 }
