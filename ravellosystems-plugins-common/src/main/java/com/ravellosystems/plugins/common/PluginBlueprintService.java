@@ -22,6 +22,7 @@
 package com.ravellosystems.plugins.common;
 
 import com.ravellosystems.plugins.exceptions.ApplicationCreateException;
+import com.ravellosystems.plugins.exceptions.ApplicationNotFoundException;
 import com.ravellosystems.plugins.exceptions.BlueprintNotFoundException;
 
 public class PluginBlueprintService implements BlueprintService {
@@ -29,15 +30,14 @@ public class PluginBlueprintService implements BlueprintService {
 	private BlueprintsRestService restService;
 
 	@Override
-	public Application createApplication(String blueprintName, String appName)
-			throws BlueprintNotFoundException, ApplicationCreateException {
+	public Application createApplication(String blueprintName, String appName) throws BlueprintNotFoundException,
+			ApplicationCreateException {
 		Application blueprint = restService.findBlueprint(blueprintName);
 		return createApplication(blueprint.getId(), appName);
 	}
 
 	@Override
-	public Application createApplication(long blueprintId, String appName)
-			throws ApplicationCreateException {
+	public Application createApplication(long blueprintId, String appName) throws ApplicationCreateException {
 		try {
 			return restService.createApplication(blueprintId, appName);
 		} catch (Exception e) {
@@ -48,10 +48,15 @@ public class PluginBlueprintService implements BlueprintService {
 	}
 
 	@Override
-	public Application createBlueprint(String appName, String blueprintName) {
-		return restService.createBlueprintFromApp(appName, blueprintName);
+	public Application createBlueprint(String appName, String blueprintName) throws ApplicationNotFoundException {
+		try {
+			return restService.createBlueprintFromApp(appName, blueprintName);
+		} catch (Exception e) {
+			throw new ApplicationNotFoundException("did not find " + appName, e);
+		} catch (Throwable t) {
+			throw new ApplicationNotFoundException(t);
+		}
 	}
-
 
 	@Override
 	public Application findBlueprint(String blueprintName) throws BlueprintNotFoundException {
@@ -62,6 +67,7 @@ public class PluginBlueprintService implements BlueprintService {
 	public void deleteBlueprint(long bpId) {
 		this.restService.deleteBlueprint(bpId);
 	}
+
 	@Override
 	public void setRestClient(BlueprintsRestService restService) {
 		this.restService = restService;
