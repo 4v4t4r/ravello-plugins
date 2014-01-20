@@ -22,6 +22,8 @@
 package com.ravellosystems.plugins.maven.mojos;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -50,17 +52,14 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	@Parameter(property = "blueprintId")
 	protected Long blueprintId;
 
-	@Parameter(property = "preferredCloud")
+	@Parameter(property = "preferredCloud", defaultValue = "AMAZON")
 	protected String preferredCloud;
 
-	@Parameter(property = "preferredZone")
+	@Parameter(property = "preferredZone", defaultValue = "Virginia")
 	protected String preferredZone;
 
-	@Parameter(property = "publishCostOptimized", defaultValue = "true")
-	protected String publishCostOptimized;
-
-	@Parameter(property = "publishPerformanceOptimized", defaultValue = "false")
-	protected String publishPerformanceOptimized;
+	@Parameter(property = "publishOptimization", defaultValue = "cost")
+	protected String publishOptimization;
 
 	@Parameter(property = "finalName")
 	protected String finalName;
@@ -78,57 +77,59 @@ public abstract class ApplicationMojo extends RavelloMojo {
 	protected int autoStop;
 
 	protected interface Publisher {
-		void doPublish(Application application, ApplicationService applicationService)
+		void doPublish(Application application,
+				ApplicationService applicationService)
 				throws ApplicationPublishException;
+	}
+
+	private Map<String, Publisher> getPublisherMap() {
+		Map<String, Publisher> publisher = new HashMap<String, Publisher>();
+		publisher.put("performance", new Publisher() {
+			@Override
+			public void doPublish(Application application,
+					ApplicationService applicationService)
+					throws ApplicationPublishException {
+				getLog().debug("publish app using performance optimization.");
+				applicationService.publishPerformanceOptimized(preferredCloud,
+						preferredZone, application.getId(), autoStop);
+			}
+		});
+		publisher.put("cost", new Publisher() {
+			@Override
+			public void doPublish(Application application,
+					ApplicationService applicationService)
+					throws ApplicationPublishException {
+				getLog().debug("publish app using cost optimization.");
+				applicationService.publishCostOptimized(application.getId(),
+						autoStop);
+			}
+		});
+		return publisher;
 	}
 
 	protected Publisher getPublisher() throws ApplicationPublishException {
 
-		if (Boolean.valueOf(publishPerformanceOptimized)) {
-			return new Publisher() {
-				@Override
-				public void doPublish(Application application, ApplicationService applicationService)
-						throws ApplicationPublishException {
-					applicationService.publishPerformanceOptimized(application.getId(), autoStop);
-				}
-			};
-		}
+		Publisher publisher = getPublisherMap().get(publishOptimization);
 
-		if (!Utils.isEmpty(preferredCloud, preferredZone)) {
-			return new Publisher() {
-				@Override
-				public void doPublish(Application application, ApplicationService applicationService)
-						throws ApplicationPublishException {
-					applicationService.publish(application.getId(), preferredCloud, preferredZone, autoStop);
-				}
-			};
-		}
+		if (publisher == null)
+			publisher = getPublisherMap().get("cost");
 
-		if (Boolean.valueOf(publishCostOptimized)) {
-			return new Publisher() {
-				@Override
-				public void doPublish(Application application, ApplicationService applicationService)
-						throws ApplicationPublishException {
-					applicationService.publishCostOptimized(application.getId(), autoStop);
-				}
-			};
-		}
-
-		throw new ApplicationPublishException("Publish rules not set. " + "Please select (prefered cloud and zone) "
-				+ "or (optimized publish mode).");
+		return publisher;
 
 	}
 
-	protected File createZip(Application application) throws ApplicationPropertiesException,
+	protected File createZip(Application application)
+			throws ApplicationPropertiesException,
 			ApplicationWrongStateException {
 		File propertiesFile = getPropFile();
 		IOService ioService = new PluginIOService();
-		ioService.writeToPropertiesFile(propertiesFile, application.getVMsDNS(), new PropertyKeyTrimmer() {
-			@Override
-			public String trim(String name) {
-				return name.trim().toLowerCase().replace(' ', '_');
-			}
-		});
+		ioService.writeToPropertiesFile(propertiesFile,
+				application.getVMsDNS(), new PropertyKeyTrimmer() {
+					@Override
+					public String trim(String name) {
+						return name.trim().toLowerCase().replace(' ', '_');
+					}
+				});
 		return ioService.zipFile(propertiesFile, getZipFilePath());
 	}
 
@@ -144,7 +145,8 @@ public abstract class ApplicationMojo extends RavelloMojo {
 		if (classifier == null || classifier.trim().isEmpty())
 			classifier = String.valueOf(appId);
 		getLog().info(
-				String.format("attach: %s %s %s", project.getGroupId(), project.getArtifactId(), project.getPackaging()));
+				String.format("attach: %s %s %s", project.getGroupId(),
+						project.getArtifactId(), project.getPackaging()));
 		projectHelper.attachArtifact(project, "zip", classifier, zip);
 	}
 

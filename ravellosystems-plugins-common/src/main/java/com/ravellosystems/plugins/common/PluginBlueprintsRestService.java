@@ -40,22 +40,28 @@ public class PluginBlueprintsRestService implements BlueprintsRestService {
 	}
 
 	@Override
-	public Application findBlueprint(String blueprintName) throws BlueprintNotFoundException {
-		RavelloApplication ravelloApplication = RavelloRestService.findBlueprint(client, blueprintName);
+	public Application findBlueprint(String blueprintName)
+			throws BlueprintNotFoundException {
+		RavelloApplication ravelloApplication = RavelloRestService
+				.findBlueprint(client, blueprintName);
 		if (ravelloApplication == null)
-			throw new BlueprintNotFoundException(blueprintName + " Blueprint not found.");
+			throw new BlueprintNotFoundException(blueprintName
+					+ " Blueprint not found.");
 		return new Blueprint(ravelloApplication);
 	}
 
 	@Override
 	public Application createApplication(long blueprintId, String appName) {
-		RavelloApplication ravelloApplication = RavelloRestService.createApplication(client, blueprintId, appName);
+		RavelloApplication ravelloApplication = RavelloRestService
+				.createApplication(client, blueprintId, appName);
 		return new Blueprint(ravelloApplication);
 	}
 
 	@Override
-	public Application createBlueprintFromApp(String appName, String blueprintName) {
-		RavelloApplication ravelloApplication = RavelloRestService.createBlueprint(client, appName, blueprintName);
+	public Application createBlueprintFromApp(String appName,
+			String blueprintName) {
+		RavelloApplication ravelloApplication = RavelloRestService
+				.createBlueprint(client, appName, blueprintName);
 		return new Blueprint(ravelloApplication);
 	}
 
@@ -93,7 +99,8 @@ public class PluginBlueprintsRestService implements BlueprintsRestService {
 		}
 
 		@Override
-		public Set<Boolean> compareVmsState(STATE state) throws ApplicationWrongStateException {
+		public Set<Boolean> compareVmsState(STATE state)
+				throws ApplicationWrongStateException {
 			return new HashSet<Boolean>();
 		}
 

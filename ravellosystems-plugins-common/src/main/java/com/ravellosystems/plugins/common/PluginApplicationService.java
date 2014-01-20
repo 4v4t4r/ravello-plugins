@@ -49,7 +49,8 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void publishCostOptimized(long appId, int autoStop) throws ApplicationPublishException {
+	public void publishCostOptimized(long appId, int autoStop)
+			throws ApplicationPublishException {
 		try {
 			restService.publishCostOptimized(appId, autoStop);
 		} catch (Exception e) {
@@ -58,16 +59,20 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void publishPerformanceOptimized(long appId, int autoStop) throws ApplicationPublishException {
+	public void publishPerformanceOptimized(String preferredCloud,
+			String preferredZone, long appId, int autoStop)
+			throws ApplicationPublishException {
 		try {
-			restService.publishPerformanceOptimized(appId, autoStop);
+			restService.publishPerformanceOptimized(preferredCloud,
+					preferredZone, appId, autoStop);
 		} catch (Exception e) {
 			throw new ApplicationPublishException(e);
 		}
 	}
 
 	@Override
-	public void publish(long appId, String preferredCloud, String preferredZone, int autoStop)
+	public void publish(long appId, String preferredCloud,
+			String preferredZone, int autoStop)
 			throws ApplicationPublishException {
 		try {
 			restService.publish(appId, preferredCloud, preferredZone, autoStop);
@@ -95,7 +100,8 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void start(long appId, int autoStop) throws ApplicationStartException {
+	public void start(long appId, int autoStop)
+			throws ApplicationStartException {
 		try {
 			restService.start(appId, autoStop);
 		} catch (Exception e) {
@@ -104,8 +110,8 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public void awaitForApplicationState(long appId, long timeout, STATE state) throws ApplicationStartException,
-			ApplicationWrongStateException {
+	public void awaitForApplicationState(long appId, long timeout, STATE state)
+			throws ApplicationStartException, ApplicationWrongStateException {
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		StateTask stateTask = stateTasks.get(state);
 		stateTask.appId = appId;
@@ -126,20 +132,23 @@ public class PluginApplicationService implements ApplicationService {
 	}
 
 	@Override
-	public boolean checkState(long appId, STATE state) throws ApplicationPublishException,
-			ApplicationWrongStateException, ApplicationNotFoundException {
+	public boolean checkState(long appId, STATE state)
+			throws ApplicationPublishException, ApplicationWrongStateException,
+			ApplicationNotFoundException {
 		Application application = restService.findApplication(appId);
 		application.validateVMsState();
 		return application.compareVmsState(state).contains(false);
 	}
 
 	@Override
-	public Application findApplication(String appName) throws ApplicationNotFoundException {
+	public Application findApplication(String appName)
+			throws ApplicationNotFoundException {
 		return restService.findApplication(appName);
 	}
 
 	@Override
-	public Application findApplication(long appId) throws ApplicationNotFoundException {
+	public Application findApplication(long appId)
+			throws ApplicationNotFoundException {
 		return restService.findApplication(appId);
 	}
 

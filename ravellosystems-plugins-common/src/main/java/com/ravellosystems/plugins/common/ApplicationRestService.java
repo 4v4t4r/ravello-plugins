@@ -34,13 +34,16 @@ public interface ApplicationRestService {
 
 	void delete(long appId) throws ApplicationDeleteException;
 
-	void publish(long appId, String preferredCloud, String preferredZone, int autoStop);
+	void publish(long appId, String preferredCloud, String preferredZone,
+			int autoStop);
 
 	void publishCostOptimized(long appId, int autoStop);
 
-	void publishPerformanceOptimized(long appId, int autoStop);
+	void publishPerformanceOptimized(String preferredCloud,
+			String preferredZone, long appId, int autoStop);
 
-	Application findApplication(String appName) throws ApplicationNotFoundException;
+	Application findApplication(String appName)
+			throws ApplicationNotFoundException;
 
 	Application findApplication(long appId) throws ApplicationNotFoundException;
 }

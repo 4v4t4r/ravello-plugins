@@ -43,7 +43,8 @@ public interface ApplicationService {
 	void publishCostOptimized(long appId, int autoStop)
 			throws ApplicationPublishException;
 
-	void publishPerformanceOptimized(long appId, int autoStop)
+	void publishPerformanceOptimized(String preferredCloud,
+			String preferredZone, long appId, int autoStop)
 			throws ApplicationPublishException;
 
 	void setRestClient(ApplicationRestService restService);
