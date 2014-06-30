@@ -102,20 +102,17 @@ public abstract class ApplicationMojo extends RavelloMojo {
     }
 
     protected Publisher getPublisher() throws ApplicationPublishException {
-
         Publisher publisher = getPublisherMap().get(publishOptimization);
-
         if (publisher == null)
             publisher = getPublisherMap().get("cost");
-
         return publisher;
-
     }
 
     protected File createZip(Application application)
             throws ApplicationPropertiesException,
             ApplicationWrongStateException {
-        File propertiesFile = getPropFile();
+        createTargetDir();
+        File propertiesFile = new File(getTarget().concat("/").concat(getFinalName()));
         IOService ioService = getIOService();
         ioService.writeToPropertiesFile(propertiesFile,
                 application.getVMsDNS(), new PropertyKeyTrimmer() {
@@ -127,8 +124,14 @@ public abstract class ApplicationMojo extends RavelloMojo {
         return ioService.zipFile(propertiesFile, getZipFilePath());
     }
 
+    private void createTargetDir() throws ApplicationPropertiesException {
+        if (!new File(getTarget()).mkdirs())
+            throw new ApplicationPropertiesException("Failed to create target directory.");
+    }
+
     protected File createZip(File propertiesFile)
             throws ApplicationPropertiesException {
+        createTargetDir();
         IOService ioService = getIOService();
         return ioService.zipFile(propertiesFile, getZipFilePath());
     }
@@ -160,11 +163,6 @@ public abstract class ApplicationMojo extends RavelloMojo {
 
     private String getFinalName() {
         return finalName != null ? finalName : project.getArtifactId();
-    }
-
-    private File getPropFile() {
-        new File(getTarget()).mkdirs();
-        return new File(getTarget().concat("/").concat(getFinalName()));
     }
 
     protected final class CredentialsImpl implements Credentials {
